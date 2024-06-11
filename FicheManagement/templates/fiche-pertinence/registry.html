@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Registre" %}
+{% endblock %}
+
+
+{% block content %}
+<section class="content-header row">
+    <div class="col-sm-6">
+        <h1>Régistre des fiches de pertinence</h1>
+        {% csrf_token %}
+    </div>
+   
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Régistre des fiches de pertinence</h3>
+                    </div>
+        
+                    <div class="card-body">
+                        <button class="btn btn-primary mb-3 create-pertinence-sheet" data-toggle="tooltip">Créer une fiche de pertinence</button>
+                        <div class="table-responsive">
+                            {% if fiches and fiches.count == 0 %}
+                                <div class="empty-table">
+                                    Vous n'avez pas encore enregistrer de fiche de pertinence. <a href="" class="mt-1" data-toggle="tooltip" title="Créer une alerte">Enregistrer votre premiere fiche</a>
+                                </div>
+                            {% else %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <td><strong>Reference</strong></td>
+                                            <td><strong>Date de renseignement de la fiche</strong></td>
+                                            <td><strong>Contexte</strong></td>
+                                            <td><strong>Domaine</strong></td>
+                                            <td><strong>Statut</strong></td>
+                                            <td><strong>Actions</strong></td>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for fiche in fiches %}
+                                            <tr>
+                
+                                                <td>{{fiche.ref_fiche}}</td>
+                                                <td> {{fiche.date_renseignement|date:'d/m/Y'}}</td>
+                                                <td class="table-text"> {{fiche.contexte}}</td>
+                    
+                                                <td class="table-text">{{fiche.domain}}</td>
+                                                <td>
+                                                    {% if fiche.state == 'draft' %}
+                                                        <span class="badge bg-secondary">
+                                                            Brouillon
+                                                        </span>
+                                                    {% elif fiche.state == 'send_to_resp' %}
+                                                        <span class=" badge bg-primary">
+                                                        Envoyée au responsable
+                                                        </span>
+                                                    {% elif fiche.state == 'validated_org' %}
+                                                        <span class="badge bg-success">
+                                                        Validée par un responsable
+                                                        </span>
+
+                                                    {% elif fiche.state == 'validated_coord' %}
+                                                        <span class="badge bg-success">
+                                                        Signée par la coordination
+                                                        </span>
+                                                    {% elif fiche.state == 'archived' %}
+                                                        <span class="badge bg-danger">
+                                                        Archivée
+                                                        </span>
+                                                    {% endif %}
+
+
+                                                </td>
+                    
+                                                <td>
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <a href="{% url 'view-update-fp' fiche.id %}" class="table-button view" ><i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                                {% if fiche.state == 'draft' %}
+                                                                    <td>
+                                                                        <a href="{% url 'view-update-fp' fiche.id %}?mode=edit" class="table-button edit" ><i class="fas fa-edit"></i></a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="" class="table-button delete" fp-id="{{fiche.id}}"><i class="fas fa-trash"></i></a>
+                                                                    </td>
+                                                                {% endif %}
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>     
+
+                                        {% endfor %}
+                                                      
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+
+                        {% block pagination %}
+
+                            <div class="pagination">
+                            
+                            
+
+                                {% for page_number in fiches.paginator.page_range %}
+
+                                    {% if page_number == fiches.number %}
+
+                                        <div class="pagination-button current">{{page_number}}</div>
+
+                                    {% else %}
+
+                                        <a
+
+                                            href="{% url 'alerts-registry' page_number %}"
+
+                                            class="pagination-button"
+
+                                        >
+
+                                            {{page_number}}
+
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        
+        <div class="modal-body">
+            <h4>Voulez vous vraiment supprimer cet élément ?</h4>
+            <span class="error"><h5>Cet action est irreversible</h5></span>
+        </div>
+
+        <div class="modal-footer">
+            <input type="button" value="Annuler" class="btn btn-white cancel" >
+            <input type="button" value="Supprimer" class="btn btn-danger delete-button" del-endpoint="{% url 'delete-fp' %}">
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-add-fp">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title"> Selectionner la fiche d'information</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    
+                        <select class="form-control" id="id_fi">
+                                    
+                        </select>
+                        <br>
+                        <button class="btn btn-primary creer"> Creer </button>
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(".table-button.delete").on("click" , function(e){
+        e.preventDefault();
+
+        let id = $(this).attr("fp-id")
+        console.log($(this))
+
+        $("#deleteModal .delete-button").attr("fp-id"  , id)
+
+        $("#deleteModal").modal('show')
+    })
+
+
+            $("#deleteModal .delete-button").on("click" , function(e){
+                e.preventDefault();
+
+                data = [{name:"fp_id" , value:$(this).attr("fp-id")} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr("del-endpoint"),
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        window.location = window.location.href
+                    },
+                    error: function(error){
+                        console.log(error)
+                        
+                    }
+                });
+                
+            })
+
+            $("#deleteModal .cancel").on("click" , function(e){
+                e.preventDefault();
+
+                $("#deleteModal").modal('hide')
+                
+            })
+</script>
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/fichePertinence.js' %}"></script>
+{% endblock %}

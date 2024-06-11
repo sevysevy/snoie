@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Create alert" %}
+{% endblock %}
+
+
+{% block content %}
+
+    <section class="content-header row">
+        <div class="col-sm-6">
+        <h1>Création d'une alerte</h1>
+        </div>
+    
+    </section>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-success mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Formulaire de création d'alerte</h3>
+                        </div>
+            
+                        <div class="card-body">
+                            <form action="{% url 'create-alert' %}" method="POST" id="msform">{% csrf_token %}
+                                <input name="step" id="step" class="step" hidden/>
+
+                                <ul id="progressbar">
+                                    <li class="active" id="account"></li>
+                                    <li id="personal"></li>
+                                    <li id="payment"></li>
+                                    <li id="confirm"></li>
+                                </ul>
+
+                                <fieldset>
+                                    
+                                    <input type="text"  name="alert_id" id="alert_id" class="hidden"/>
+                                    <div class="form-group">
+                                        <label for="date_alert">Date <span class="required">*</span></label>
+                                        <input type="date" name="date_alert" id="date_alert" class="form-control" data-date="" data-date-format="DD/MM/YYYY" format="dd/mm/yyyy" required="">
+                                        <span class="invalid text-danger date-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="alert_declaration">Déclaration du dénonciateur <span class="required">*</span></label>
+                                        <textarea name="alert_declaration" id="alert_declaration" class="form-control" rows="5" required=""></textarea>
+                                        <span class="invalid text-danger alert-declaration-error"></span>
+                                    </div>
+                                    
+                                    <input type="button" name="next" class="next action-button" value="Suivant">
+                                </fieldset>
+                                <fieldset>
+                                    
+                                    <div class="form-group">
+                                        <label for="region">Région <span class="required">*</span></label>
+                                        <select name="region" id="region" class="form-control" required="">
+                                            <option value="0"></option>
+                                            {% for region in regions %}
+                                                <option value="{{region.id}}">{{region.name}}</option>
+                                            {% endfor %}
+                                                
+                                        </select>
+                                        
+                                    </div>
+                                    <div class="form-group department" hidden>
+                                        <label for="dep">Département <span class="required">*</span></label>
+                                        <select name="department" id="department" class="form-control" required="">
+                                            <option value="0"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group arrondissement" hidden>
+                                        <label for="arr">Arrondissement <span class="required">*</span></label>
+                                        <select name="arrondissement" id="arrondissement" class="form-control" required="">
+                                            <option value="0"></option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group village" hidden>
+                                        <label for="village">Village <span class="required">*</span></label>
+                                        <input type="text" name="village" id="village" class="form-control" required="">
+                                    </div>
+
+                                    <input type="button" name="previous" class="previous action-button-previous" value="Precedent">
+                                    <input type="button" name="next" class="next action-button" value="Suivant">
+                                </fieldset>
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label for="canal">Canal de déclaration*</label>
+                                        <select class="form-control" name="canal" id="canal" required="">
+                                            <option vaue="0"></option>
+                                            {% for canal in canals %}
+                                                <option value="{{canal.id}}">{{canal.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                       
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="tel-informateur">Téléphone de l'informateur : </label>
+                                        <input type="number" name="tel-informateur" id="tel-informateur" class="form-control">
+                                    </div>
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Precedent">
+                                        <input type="button" value="sauvegarder" class="next btn btn-success">
+                                </fieldset>
+                                <fieldset>
+                                    <h2 class="fs-title text-center"> Création de l'alerte réussie !</h2>
+                                    <br><br>
+                                    <div class="row justify-content-center">
+                                        <div class="col-3">
+                                            <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image">
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <br><br>
+                                        <a href="{% url 'alerts-registry' 1 %}" style="padding-top : 10px">Voir la liste des alertes</a>
+                                    </div>
+                                        
+                                </fieldset>
+                            </form>
+                            <hr>
+                            <label class="required">Les champs marqués (*) sont obligatoires</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/shared.js' %}"></script>
+    <script src="{% static 'js/alertManagement.js' %}"></script>
+{% endblock %}
+

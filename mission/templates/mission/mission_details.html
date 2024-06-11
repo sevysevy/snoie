@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Mission" %}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="content-header row">
+    <div class="col-sm-6">
+        <h1>Détails de la mission</h1>
+        {% csrf_token %}
+    </div>
+   
+</section>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            {{mission.name}}
+
+                            <span class="badge
+                                {% if mission.statut_mission == "pending" %}
+                                    bg-warning
+                                {% elif mission.statut_mission == "En cours" %}
+                                    bg-primary
+                                {% elif mission.statut_mission == "Terminé" %}
+                                    bg-success
+                                {% elif mission.statut_mission == "Non réalisée" %}
+                                    bg-warning
+                                {% endif %}
+                            ">
+                                {{mission.statut_mission}}
+                            </span>
+
+
+                        </h3>
+                    </div>
+        
+                    <div class="card-body">
+                        <ul class="list_details_mission">
+                            <li>
+                                <a href="" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                  Fiche d'information  
+                                  
+                               </a>
+
+                                <span class="date_ajout_document">Ajouté le </span>
+
+                            </li>
+
+                            <li>
+                                <a href="" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                  Fiche de pertinence  
+                                  
+                               </a>
+
+                               <span class="date_ajout_document">Ajouté le </span>
+
+                            </li> 
+                            <!-- draft TDR -->
+
+                                <li>
+                                    <a href="" rel="noopener noreferrer" style = "padding-right : 20px">   Premier draft de Termes de reference</a>
+                                    
+                                    <span class="date_ajout_document">Ajouté le  </span>
+                                </li>
+                          
+                            <!-- tdr amender -->
+                                    <li>
+                                        
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Termes de references amendés </a>
+                                        
+
+                                     
+                                        <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                        Termes de references validé
+                                        
+                                        </a>
+
+                                        <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>
+                                    
+                                    <li>
+
+                                        
+                                            <a href="" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Ordre de mission </a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le </span>
+                                     
+
+                                    </li>
+                                
+
+                                    <li>
+                                        
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px">
+                                            PV d'entretien   
+                                        </a>
+                                        
+                                        <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>
+
+                                    <li>
+                                        
+                                            <a href="" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Compte rendu d'entretien </a>
+                                        
+                                        
+                                            <span class="date_ajout_document"> Ajouté le </span>
+                                        
+
+                                    </li>
+                               
+
+                                    <li>
+
+                                            <a href="" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Fiche d'observation</a>
+                                        
+
+                                            <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>
+             
+                                    <li>
+                                            <a href="" rel="noopener noreferrer" style = "padding-right : 20px"  >
+                                            Check list de conformité </a>
+                                        
+
+                                            <span class="date_ajout_document">Ajouté le </span>
+                                    </li>
+                               
+                                    <li>
+                                        
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px" > Premier draft de rapport de mission  </a>
+                                       
+                                            <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>    
+                               
+                                    <li>
+                                        
+                                            <a href="" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Rapport de mission commenté</a>
+                                        
+
+                                            <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>
+
+                                    <li>
+                                        
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                        Rapport de mission amendé 1 </a>
+                                    
+                                        <span class="date_ajout_document">Ajouté le </span>
+                                        
+                                    </li>
+                                
+                                    <li>
+                                        
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px" > Rapport de mission amendé 2 </a>
+                                       
+
+                                        <span class="date_ajout_document">Ajouté le </span>
+                                     
+                                    </li>
+                                
+                                    <li>
+                                        <a href="" rel="noopener noreferrer" style = "padding-right : 20px" > Rapport de mission approuvé</a>
+                                    
+                                        <span class="date_ajout_document">Ajouté le </span>
+                                   
+                                    </li>
+
+                                
+                                <br><br>
+                                <h4> Mission annulée par :  </h4>
+                                <br>
+                                <h5>Motif de la non réalisation de la mission : </h4>
+                                <textarea class="form-control" readonly = "readonly" > </textarea>
+                                <br><br>
+
+                                <h4>Commentaires sur la non réalisation de la mission : </h4>
+                                <textarea class="form-control" readonly = "readonly" > </textarea>
+                           
+
+                        </ul>
+
+                        <!--  Delete multiple options -->
+                        <input type="text" class="id_mission" value="<?= $mission['id_mission']?>" hidden>
+                        <button class="btn btn-danger delete-multiple">Supprimer </button>
+                        <button class="btn btn-secondary cancel-delete-multiple">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+{% endblock %}

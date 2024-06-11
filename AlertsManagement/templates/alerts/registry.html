@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Registre" %}
+{% endblock %}
+
+
+{% block content %}
+<section class="content-header row">
+    <div class="col-sm-6">
+        <h1>Régistre des alertes</h1>
+        {% csrf_token %}
+    </div>
+   
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Régistre des alertes</h3>
+                    </div>
+        
+                    <div class="card-body">
+                        <a href="{% url 'create-alert' %}" class="btn btn-primary mb-3" data-toggle="tooltip" title="Créer une alerte">Créer une dénonciation</a>
+                        <div class="table-responsive">
+                            {% if alerts and alerts.count == 0 %}
+                                <div class="empty-table">
+                                    Votre registre d'alerte est vide. <a href="{% url 'create-alert' %}" class="mt-1" data-toggle="tooltip" title="Créer une alerte">Enregistrer votre premiere alerte</a>
+                                </div>
+                            {% else %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <td><strong>Numéro d'ordre</strong></td>
+                                            <td><strong>Déclaration du dénonciateur</strong></td>
+                                            <td> <strong>Région d'alerte</strong></td>
+                                            <td><strong>Date de l'alerte</strong></td>
+                                            <td><strong>Actions</strong></td>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for alert in alerts %}
+                                            <tr>
+                
+                                                <td>{{alert.num_order}}</td>
+                                                <td> {{alert.declaration}}</td>
+                    
+                                                <td>{{alert.region.name}}</td>
+                                                <td>{{alert.date_alert|date:'d/m/Y'}}</td>
+                    
+                                                <td>
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <a href="{% url 'view-update-alert' alert.id %}" class="table-button view" alert-id="{{alert.id}}"><i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="{% url 'view-update-alert' alert.id %}?mode=edit" class="table-button edit" alert-id="{{alert.id}}"><i class="fas fa-edit"></i></a>
+                                                                </td>
+                                                                <td>
+                                                                    <a class="table-button delete" alert-id="{{alert.id}}"><i class="fas fa-trash"></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>     
+
+                                        {% endfor %}
+                                                      
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+
+                        {% block pagination %}
+
+                            <div class="pagination">
+                            
+                            
+
+                                {% for page_number in alerts.paginator.page_range %}
+
+                                    {% if page_number == alerts.number %}
+
+                                        <div class="pagination-button current">{{page_number}}</div>
+
+                                    {% else %}
+
+                                        <a
+                                            href="{% url 'alerts-registry' page_number %}"
+
+                                            class="pagination-button"
+                                        >
+
+                                            {{page_number}}
+
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        
+        <div class="modal-body">
+            <h4>Voulez vous vraiment supprimer cet élément ?</h4>
+            <span class="error"><h5>Cet action est irreversible</h5></span>
+        </div>
+
+        <div class="modal-footer">
+            <input type="button" value="Annuler" class="btn btn-white cancel" >
+            <input type="button" value="Supprimer" class="btn btn-danger delete-button" del-endpoint="{% url 'delete-alert' %}">
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/alertManagement.js' %}"></script>
+{% endblock %}

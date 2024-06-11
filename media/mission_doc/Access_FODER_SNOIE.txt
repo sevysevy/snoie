@@ -1,0 +1,27 @@
+
+
+
+---Profile de test
+
+Lien: http://camertic.net/snoie/
+
+Profil observateur :
+Email : sam@gmail.com
+Pass : 12345678 
+
+Profil Abonné : 
+Email : abonne@gmail.com
+Pass : 12345678
+
+Profil Responsable
+Email : responsable@gmail.com
+Pass : 12345678
+
+Profil Coordination
+Email : coordination@gmail.com
+Pass : 12345678
+
+
+FTP 
+Login: pollux@camertic.net
+Pass : pollux@camertic.net

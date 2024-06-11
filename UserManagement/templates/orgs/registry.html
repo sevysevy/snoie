@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Registre" %}
+{% endblock %}
+
+
+{% block content %}
+<section class="content-header row">
+    <div class="col-sm-6">
+        <h1>Liste des organisations</h1>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Liste des organisations</h3>
+                    </div>
+        
+                    <div class="card-body">
+                        <a href="" class="btn btn-primary mb-3"  id="create-user">Ajouter une organisation</a>
+                        <div class="table-responsive">
+                            
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td><strong>Nom de l'organisation</strong></td>
+                                        <td><strong>Email</strong></td>
+                                        <td><strong>Telephone</strong></td>
+                                        <td><strong>Domaine</strong></td>
+                                        <td><strong>Date enregistrement</strong></td>
+                                        <td><strong>Actions</strong></td>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for org in orgs %}
+                                        <tr>
+            
+                                            <td>{{org.name}}</td>
+                                            <td> {{org.email}}</td>
+                                            <td> {{org.phone}}</td>
+                                            <td> {{org.domaine}}</td>
+                                            <td> {{org.created_at}}</td>
+                
+                
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <a href="" class="table-button view" user-id="{{org.id}}" info-url="" data-toggle="modal" data-target="#voirModal"><i class="fas fa-eye"></i></a>
+                                                            </td>
+                                                            <td>
+                                                                <a href="#" class="table-button edit" user-id="{{org.id}}"  data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i></a>
+                                                            </td>
+                                                            <td>
+                                                                <a href="" class="table-button delete" user-id="{{org.id}}" ><i class="fas fa-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>     
+
+                                    {% endfor %}
+                                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% block pagination %}
+
+                            <div class="pagination">
+                            
+                            
+
+                                {% for page_number in orgs.paginator.page_range %}
+
+                                    {% if page_number == orgs.number %}
+
+                                        <div class="pagination-button current">{{page_number}}</div>
+
+                                    {% else %}
+
+                                        <a
+
+                                            href="{% url 'organisations-list' page_number %}"
+
+                                            class="pagination-button"
+
+                                        >
+
+                                            {{page_number}}
+
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+
+<div class="modal fade" id="addModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Ajouter un utilisateur </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-form" action="{% url 'create-user' %}" method="POST" enctype="multipart/form-data">
+
+                    <fieldset>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5>Identification</h5>
+                                <hr>
+                                <div class="form-group"> 
+                                    <label for="lastName">Noms</label>
+                                    <input type="text" name="lastName" id="name" value="" class="form-control">
+                                </div>
+            
+                                <div class="form-group"> 
+                                    <label for="firstName">Prenoms</label>
+                                    <input type="text" name="firstName" id="firstName" value="" class="form-control">
+                                </div>
+            
+            
+                                <div class="form-group"> 
+                                    <label for="phone">Telephone</label>
+                                    <input type="text" name="phone" id="phone" value="" class="form-control">
+                                </div>
+            
+                                <div class="form-group"> 
+                                    <label for="organisation">Organisation</label>
+                                    <select name="organisation" id="organisation" class="form-control select2" style="width: 100%;">
+                                        <option value="0"></option>
+                                        {% for org in orgs %}
+                                            <option value="{{org.id}}">{{org.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+            
+            
+                                <div class="form-group"> 
+                                    <label for="role">Role</label>
+                                    <select name="role" id="role" class="form-control select2" style="width: 100%;">
+                                        <option value="0"></option>
+                                        {% for role in roles %}
+                                            <option value="{{role.id}}">{{role.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+        
+                            <div class="col-sm-6 border-left-separator">
+                                <h5>Paramètres de connexion</h5>
+                                <hr>
+                                <div class="form-group"> 
+                                    <label for="email">Email</label>
+                                    <input type="text" name="email" id="email" value="" class="form-control">
+                                </div>
+            
+                                <div class="form-group"> 
+                                    <label for="email">Mot de passe</label>
+                                    <input type="password" name="password" id="password" value="" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <input type="submit" value="Enregistrer" class="form-control btn btn-success save-user" style="margin-bottom: 10px">
+                            <br>
+                            <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
+                        </div>
+                        
+                    </fieldset>
+                    
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script src="{% static 'js/userManagement.js' %}"></script>
+{% endblock %}

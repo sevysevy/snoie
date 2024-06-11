@@ -1,0 +1,107 @@
+{% load static %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+
+<!DOCTYPE html>
+<html >
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>{% block title %} {% endblock %}</title>
+        <link rel="shortcut icon" href="{% static 'images/snoie-logo.jpeg' %}" type="image/x-icon"/>
+        <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+
+        <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'plugins/bootstrap/bootstrap.bundle.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'plugins/fontawesome/fontawesome.min.css' %}">
+        {% block css %}
+
+        {% endblock %}
+        
+    </head>
+
+
+    <body>
+        <nav>
+            <ul class="nav bg-success">
+                <li class="nav-link">
+                    <i class="fa fa-phone"></i> +237 222 005 248
+                </li>
+                <li class="nav-link">
+                <i class="fa fa-envelope"></i> snoiecameroun@gmail.com
+                </li>
+        
+                <ul class="nav float-right">
+                    <li class="nav-link ">
+                        <a href="" class="btn btn-primary contact-us" >Contactez Nous</a>
+                    </li>
+                </ul>
+                
+            </ul>
+        </nav>
+        
+        {% block content %} {% endblock %}
+
+
+
+        {% block footer %}
+            
+        <footer>
+            <div class="partenaire row center">
+                <div class="col-md-2">
+                    <a href="https://forest4dev.org/ "><img src = "{% static 'images/FODER.jpeg'  %}"></a>
+                </div>
+
+                <div class="col-md-2">
+                    <a href="https://m.facebook.com/Cedlabiyong/ "><img src = "{% static 'images/CEDLA.jpg' %}"></a>
+                </div>
+
+                <div class="col-md-2">
+                    <a><img src = "{% static 'images/ECODEV.png' %}" style="width : 20vh"></a>
+                </div>
+
+                <div class="col-md-2">
+                    <a href="https://eco4dev.org/ "><img src = "{% static 'images/PAPEL.jpg' %}"></a>
+                </div>
+                
+
+            
+            </div>
+            <br>
+            <div class="partenaire row">
+                <div class="col-md-2">
+                    <a href="https://ti-cameroun.org/ "><img src = "{% static 'images/TI-C.jpg' %}"></a>
+                </div>
+
+                <div class="col-md-2">
+                    <a href=" "><img src = "{% static 'images/CADDE.jpg' %}"></a>
+                </div>
+                <div class="col-md-2">
+                    <a href=" "><img src = "{% static 'images/SUHE.jpg' %}"></a>
+                </div>
+            </div>
+        
+            <br><br>
+            <p style="text-align : center">
+                <strong class="mot-footer">Copyright &copy; 2023 <a href="">SNOIE Data Management Tools </a>.</strong> Tous droits réservés. 
+            </p>
+        </footer>
+        
+        {% endblock %}
+
+        
+
+        
+        {% block js %}
+          
+        {% endblock %}
+    </body>
+
+
+
+</html>

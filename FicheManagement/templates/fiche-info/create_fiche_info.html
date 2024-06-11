@@ -1,0 +1,577 @@
+
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Creer une fiche d'information" %}
+{% endblock %}
+
+
+
+{% block content %}
+
+    <section class="content-header row">
+        <div class="col-sm-6">
+            <h1>Création d'une fiche d'information</h1>
+        </div>
+        <span class="successToastr"></span>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{% url 'fiche-info-registry' 1 %}">Fiche information</a></li>
+                <li class="breadcrumb-item"><a href="#">Créer-fiche-information</a></li>
+            </ol>
+        </div>
+    
+    </section>
+
+    <style>
+        .signature-pad {
+            border: 1px solid gray; 
+            left: 0;
+            top: 0;
+            width:400px;
+            height:200px;
+            background-color: white;
+        }
+        
+
+    </style>
+     
+     
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title"></h3>
+                        </div>
+                        <div class="card-body">
+                            <form  id="msform" action="{% url 'create-fiche-info' %}">{% csrf_token %}
+                                <input name="step" id="step" class="step" value="{{step}}" hidden/>
+                                <ul id="progressbar">
+                                    <li class="active" id="account"></li>
+                                    <li id="personal"></li>
+                                    <li id="payment"></li>
+                                    <li id=""></li>
+                                </ul>
+                                    
+                                <div id="etape1">
+                                    
+                                    <fieldset>
+                                        <div class="form-group">
+
+                                            <input id="id_fi" class="id_fi" name="id_fi" hidden>
+
+                                            <label for="ref_fi">1. Reférence de la fiche d'information</label>
+                                           
+                                            <input type="text" name="ref_fi" id="" class="form-control" value="{{ref_fi}}" readonly="readonly">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="date_constat">2. Date de constat de  l'infraction*</label>
+                                            <input type="date" name="date_constat" id="date_constat" class="form-control">
+                                        </div>
+                                        <span class="text-danger dateConsErr"></span>
+                                        <span class="text-danger err"></span>
+
+                                        <div class="form-group" >
+                                            <label for="date_reception">3. Date de réception des alertes*</label>
+                                            <input type="date" name="date_reception" id="date_reception" class="form-control" >
+                                        </div>
+                                        <span class="text-danger dateRecepErr"></span>
+                                        <span class="text-danger errDateRecep_CurrentDate"></span>
+                                        
+                                        <div class="form-group">
+                                            <label for="organisation">4. Nom de l'OSC qui receuille l'information</label>
+                                            <input type="text" name="organisation" id="organisation" class="form-control" value="{{organisation}}" readonly="readonly">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="entite">5. Nom de la personne (facultatif) ou de l'entité qui signale l'infraction constatée</label>
+                                            <input type="text" name="entite" id="entite" class="form-control">
+                                        </div>
+                                        <input type="button" value="Suivant" class="next btn btn-success">
+                                    </fieldset>
+                                    
+                                    <fieldset>
+                                        
+                                        <div class="form-group">
+                                            <p class="" style="font-weight: bold;">Lieu où se pose le problème. </p>
+                                            <label for="village">6. Village</label>
+                                            <input type="text" name="village_fi" id="village_fi" class="form-control">
+                                        </div>
+                                        <span class="text-danger villageErr"></span>
+                                        <div class="form-group">
+                                            <label for="reg">7. Région*</label>
+                                            <select name="region" id="region" class="form-control select2" style="width: 100%;">
+                                                <option value="0"></option>
+                                                {% for region in regions %}
+                                                    <option value="{{region.id}}">{{region.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dep_fi">8. Département*</label>
+                                            <select name="department" id="department" class="form-control select2" style="width: 100%;">
+                                                
+                                            </select>
+                                        </div>
+                                        <span class="text-danger depErr"></span>
+                                        <div class="form-group">
+                                            <label for="arr_fi">9. Arrondissement*</label>
+                                            <select name="arrondissement" id="arrondissement" class="form-control select2" style="width: 100%;">
+                                                
+                                            </select>
+                                        </div>
+                                        <span class="text-danger arrErr"></span>
+                                        <div class="form-group">
+                                            <label for="titre_ex">10. Titre de l'exploitation concernée(nom et numéro) ou domaine forestier concerné*</label>
+                                            <input type="text" name="titre_exp" id="titre_exp" class="form-control" >
+                                        </div>
+                                        
+                                            <!--  Garder l'id de la FI pour faire des update dans le form-->
+                                        
+
+                                        <span class="text-danger titreErr"></span>
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Précédent">
+                                        <input type="button" value="Suivant" class="next btn btn-success">
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label for="nom_ex">11. Nom de l'exploitant(e) et/ou de la société impliquée (le cas échéant)</label>
+                                            <input type="text" name="nom_exp" id="nom_exp" class="form-control" >
+                                        </div>
+                                        <span class="text-danger nomExpErr"></span>
+                                        <div class="form-group">
+                                            <label for="">12. Description des faits par l'informateur/informatrice (reporter seulement les dires de l'informateur/informatrice)*</label>
+                                            <textarea name="desc_ex_fi" id="desc_ex_fi" cols="30" rows="10" class="form-control" ></textarea>
+                                        </div>
+                                        <span class="text-danger descErr"></span>
+                                        <div class="form-group">
+                                            <label for="source">13. Soupçon de l'infraction de l'examinateur/examiniatrice*</label>
+                                            <textarea name="soup_fi" id="soup_fi" cols="30" rows="10" class="form-control" ></textarea>
+                                        </div>
+                                        <span class="text-danger soupErr"></span>
+                                        <div class="form-group">
+                                            <label for="ref_text_leg">14. Reférence aux textes législatifs, réglementaires et normatifs en vigueur (écrire entièrement les dispositions des articles concernés) </label>
+                                            <textarea name="ref_text_leg" id="ref_text_leg" cols="30" rows="10" class="form-control"></textarea>
+                                        </div>
+                                    
+                                        <!--  Garder l'ID de la FI pour faire des update dans le form-->
+                                        
+                                        <span class="text-danger refTextErr"></span>
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Precedent"/>
+                                        <input type="button" value="Suivant" class="next btn btn-success">
+                                    </fieldset>
+                                    
+                                    <fieldset>
+                                        <div class="">
+                                                
+                                            <label class="col-md-12">Signez la fiche pour validation <br></label>
+
+                                            <div class="alert alert-warning" style="font-style: italic;"><i class="fas fa-exclamation-triangle"></i> Attention : En signant cette fiche, elle sera directement transmise au responsable de l'OSC et vous ne pourrez plus la modifier !!!  </div>
+
+                                            
+                                            <div id="signature" class="col-md-12 signature-pad"></div>
+                                            <textarea id="signed" name="signed" style="display: none"></textarea>
+                                        </div>
+                                        <button id="clear" class="btn btn-danger">Effacer</button>
+
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Precedent"/>
+                                        <input type="submit" id="sign-btn" class="valid essai btn btn-success " data-action="save-png" value="Envoyer la fiche d'information au responsable"/>
+
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <h2 class="fs-title text-center">Succès !</h2>
+                                            <br>
+                                            <div class="row justify-content-center">
+                                                <div class="col-3">
+                                                    <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image">
+                                                </div>
+                                            </div>
+                                            <br><br>
+                                            <div class="row justify-content-center">
+                                                <div class="col-7 text-center">
+                                                    <h5>La fiche d'infomation a été envoyé au responsable de votre organisation. </h5><br><br>
+                                                </div>
+
+                                                
+                                                <div id="lien"></div>
+                                                    
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% block js %}
+    <script src="{% static 'js/shared.js' %}"></script>
+{% endblock %}
+<script>
+   
+    $(document).ready(function(){
+        var current_fs, next_fs;
+
+        var options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-full-width",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+        
+
+
+        // Change le format de date 
+        function dateFormat(inputDate, format) {
+            //parse the input date
+            const date = new Date(inputDate);
+
+            //extract the parts of the date
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();    
+
+            //replace the month
+            format = format.replace("MM", month.toString().padStart(2,"0"));        
+
+            //replace the year
+            if (format.indexOf("yyyy") > -1) {
+                format = format.replace("yyyy", year.toString());
+            } else if (format.indexOf("yy") > -1) {
+                format = format.replace("yy", year.toString().substr(2,2));
+            }
+
+            //replace the day
+            format = format.replace("dd", day.toString().padStart(2,"0"));
+
+            return format;
+        }
+
+
+
+        //clique sur le bouton enregistrer
+        $('.next').on('click', function (e) {
+            e.preventDefault();
+
+            current_fs = $(this).parent();
+            next_fs = current_fs.next();
+
+            var donnee = current_fs.serializeArray()
+            var step = $("#step").val()
+            donnee.push({name : 'csrfmiddlewaretoken', value : $("input[name='csrfmiddlewaretoken']").val()})
+            donnee.push({name: "step", value : step})
+
+            
+            if (step == "1"){
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href,
+                    data: donnee,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        $("#step").val(response["next-step"]) 
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        
+                        next_fs.show(); 
+                        current_fs.animate({opacity: 0}, {
+                            step: function(now) {
+                                // for making fielset appear animation
+                                opacity = 1 - now;
+    
+                                current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                });
+                                next_fs.css({'opacity': opacity});
+                            }, 
+                            duration: 600
+                        });
+                    },
+                    error: function(error){
+                        console.log(error)
+                        toastr.options = options
+                        toastr["error"](error, "SNOIE ERROR")
+                        
+                    }
+                });
+            }
+            else if (step == "2"){
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href,
+                    data: donnee,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        $("#step").val(response["next-step"]) 
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        
+                        next_fs.show(); 
+                        current_fs.animate({opacity: 0}, {
+                            step: function(now) {
+                                // for making fielset appear animation
+                                opacity = 1 - now;
+    
+                                current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                });
+                                next_fs.css({'opacity': opacity});
+                            }, 
+                            duration: 600
+                        });
+                    },
+                    error: function(error){
+                        console.log(error)
+                        toastr.options = options
+                        toastr["error"](error, "SNOIE ERROR")
+                        
+                    }
+                });
+            }
+            else if(step == "3"){
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href,
+                    data: donnee,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        $("#step").val(response["next-step"]) 
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        
+                        next_fs.show(); 
+                        current_fs.animate({opacity: 0}, {
+                            step: function(now) {
+                                // for making fielset appear animation
+                                opacity = 1 - now;
+    
+                                current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                });
+                                next_fs.css({'opacity': opacity});
+                            }, 
+                            duration: 600
+                        });
+                    },
+                    error: function(error){
+                        console.log(error)
+                        toastr.options = options
+                        toastr["error"](error, "SNOIE ERROR")
+                        
+                    }
+                });
+            }
+
+           
+        });
+
+        //clique sur le bouton précedent 
+        $(".previous").click(function (e) { 
+            e.preventDefault();
+            current_fs = $(this).parent();
+            prev_fs = current_fs.prev();
+            prev_fs.show();
+
+            var current_step = Number($("#step").val())
+            $("#step").val(current_step-1)
+            current_fs.hide();
+            
+        });
+
+
+        $('.valid').click(function(e){
+            e.preventDefault();
+            e.preventDefault(); 
+            var sign = $('#signed').val() ;
+            var step = $("#step").val();
+
+            current_fs = $(this).parent();
+            next_fs = current_fs.next();
+
+            var donnee = [{name:"signed" , value:sign}]
+            donnee.push({name : 'csrfmiddlewaretoken', value : $("input[name='csrfmiddlewaretoken']").val()})
+            donnee.push({name: "step", value : step})
+
+            $.ajax({
+                type: "POST",
+                url: window.location.href,
+                data: donnee,
+                dataType: "JSON",
+                success: function (response) { 
+                    $("#step").val(response["next-step"]) 
+                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                    
+                    next_fs.show(); 
+                    current_fs.animate({opacity: 0}, {
+                        step: function(now) {
+                            opacity = 1 - now;
+
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+                            next_fs.css({'opacity': opacity});
+                        }, 
+                        duration: 600
+                    });
+                },
+                error: function(error){
+                    console.log(error)
+                    toastr.options = options
+                    toastr["error"](error, "SNOIE ERROR")
+                    
+                }
+            });
+            
+        })
+
+
+         /********************************
+         *  Signature Debut              *
+         *                              *
+         *******************************/
+            var signature = $('#signature').signature({
+                syncField: '#signed',
+                syncFormat: 'PNG'
+            });
+            $("#clear").click(function (e) { 
+                e.preventDefault();
+                signature.signature('clear')
+                $("#signed").val('');
+            });
+        /********************************
+         *  Signature FIn               *
+         *                              *
+         *******************************/
+
+        /*$('.valid').on('click', function(e){
+            e.preventDefault(); 
+            var sign = $('#signed').val() ;
+            var id_fi = $('#id_fi').val();
+
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('Ficheinformation/validation_obs') ?>",
+                data: {id_fi : id_fi, signed:sign},
+                dataType: "JSON",
+                success : function(response){
+                          
+                console.log(response); 
+                // Je crée le lien 
+		        var elm = document.createElement('a');
+                // J'ajoute le href
+                var url_test = "<?= base_url() ?>" ;  
+		        elm.href= window.location.origin +"/fiche-pertinence/ajouter/"+ response.id_fi;
+               // elm.classList.add('btn'); 
+                elm.classList.add('btn-info', 'add-space'); 
+
+                // Je crée le contenu 
+                var contenu = document.createTextNode('Créer la fiche de pertinence associée à cette fiche d\'information');
+
+                elm.appendChild(contenu);
+                
+
+                // On insère le lien dans le body
+                var link = document.getElementById('lien'); 
+                var elmReturn = link.appendChild(elm);
+
+                // On vérifie que c'est le même objet qui est retourné
+                console.log(elmReturn.constructor);
+                console.log('Elément retourné => '+elmReturn.href);
+
+                
+                }
+            })
+
+            current_fs = $(this).parent();
+            next_fs = current_fs.next(); 
+  
+            next_fs.show();
+            current_fs.hide();
+        }); */
+       
+
+        $('#region').select2({
+        allowClear: true,
+        placeholder: {
+            id: "0",
+            text:"Choisir dans la liste",
+            selected:'selected'
+          },
+    });
+
+    $('#department').select2({
+        allowClear: true,
+        placeholder: {
+            id: "0",
+            text:"Choisir dans la liste",
+            selected:'selected'
+          },
+    })
+    $('#arrondissement').select2({
+        allowClear: true,
+        placeholder: {
+            id: "0",
+            text:"Choisir dans la liste",
+            selected:'selected'
+          },
+    })
+       
+        $('#region').on('select2:select', function (e) {
+            var data = e.params.data;
+            var region_id = data.id
+            var departments = load_departments(region_id)
+            
+            $('#department').select2().empty().select2({
+                data:[{"id":0, "text":"Choisir dans la liste"}].concat(departments.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+            }).trigger("change");
+
+            $(".department").removeAttr("hidden")
+        })
+
+
+
+        
+
+        $('#department').on('select2:select', function (e) {
+            var data = e.params.data;
+            var department_id = data.id
+            var arrs = load_arrs(department_id)
+
+            $('#arrondissement').select2().empty().select2({
+                data: [{"id":0, "text":"Choisir dans la liste"}].concat(arrs.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+            }).trigger("change");
+
+            $(".arrondissement").removeAttr("hidden")
+        });
+
+
+        $('#arrondissement').on('select2:select', function (e) {
+            
+            $(".village").removeAttr("hidden")
+        });
+       
+    });
+</script>
+
+{% endblock%}

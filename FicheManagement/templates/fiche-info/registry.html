@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Registre" %}
+{% endblock %}
+
+
+{% block content %}
+<section class="content-header row">
+    <div class="col-sm-6">
+        <h1>Régistre des fiches d'information</h1>
+        {% csrf_token %}
+    </div>
+   
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    <div class="card-header">
+                        <!--h3 class="card-title">Régistre des fiches d'information</h3-->
+                    </div>
+        
+                    <div class="card-body">
+                        <a href="{% url 'create-fiche-info' %}" class="btn btn-primary mb-3" data-toggle="tooltip" title="Créer une alerte">Créer une fiche d'information</a>
+                        <div class="table-responsive">
+                            {% if fiches and fiches.count == 0 %}
+                                <div class="empty-table">
+                                    Vous n'avez pas encore enregistrer de fiche d'information. <a href="{% url 'create-alert' %}" class="mt-1" data-toggle="tooltip" title="Créer une alerte">Enregistrer votre premiere fiche</a>
+                                </div>
+                            {% else %}
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <td><strong>Reference</strong></td>
+                                            <td><strong>Date de reception de la fiche</strong></td>
+                                            <td><strong>Date de constat des faits</strong></td>
+                                            <td><strong>Observateur</strong></td>
+                                            <td><strong>Statut</strong></td>
+                                            <td><strong>Actions</strong></td>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for fiche in fiches %}
+                                            <tr>
+                
+                                                <td>{{fiche.ref_fiche}}</td>
+                                                <td> {{fiche.date_reception|date:'d/m/Y'}}</td>
+                                                <td> {{fiche.date_constat|date:'d/m/Y'}}</td>
+                    
+                                                <td>{{fiche.observator.fullName}}</td>
+                                                <td>
+                                                    {% if fiche.state == 'draft' %}
+                                                        <span class="badge bg-secondary">
+                                                            Brouillon
+                                                        </span>
+                                                    {% elif fiche.state == 'send_to_resp' %}
+                                                        <span class=" badge bg-primary">
+                                                        Envoyée au responsable
+                                                        </span>
+                                                    {% elif fiche.state == 'validated_org' %}
+                                                        <span class="badge bg-success">
+                                                        Validée par un responsable
+                                                        </span>
+
+                                                    {% elif fiche.state == 'validated_coord' %}
+                                                        <span class="badge bg-success">
+                                                        Signée par la coordination
+                                                        </span>
+                                                    {% elif fiche.state == 'archived' %}
+                                                        <span class="badge bg-danger">
+                                                        Archivée
+                                                        </span>
+                                                    {% endif %}
+                                                    
+                                                    
+                                                    
+                                                </td>
+                    
+                                                <td>
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <a href="{% url 'view-update-fi' fiche.id %}" class="table-button view"  ><i class="fas fa-eye"></i></a>
+                                                                </td>
+                                                                {% if fiche.state == 'draft' %}
+                                                                    <td>
+                                                                        <a href="{% url 'view-update-fi' fiche.id %}?mode=edit" class="table-button edit"><i class="fas fa-edit"></i></a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="" class="table-button delete" fi-id="{{fiche.id}}"><i class="fas fa-trash"></i></a>
+                                                                    </td>
+                                                                {% endif %}
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>     
+
+                                        {% endfor %}
+                                                      
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>
+
+                        {% block pagination %}
+
+                            <div class="pagination">
+                            
+                            
+
+                                {% for page_number in fiches.paginator.page_range %}
+
+                                    {% if page_number == fiches.number %}
+
+                                        <div class="pagination-button current">{{page_number}}</div>
+
+                                    {% else %}
+
+                                        <a
+
+                                            href="{% url 'alerts-registry' page_number %}"
+
+                                            class="pagination-button"
+
+                                        >
+
+                                            {{page_number}}
+
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        
+        <div class="modal-body">
+            <h4>Voulez vous vraiment supprimer cet élément ?</h4>
+            <span class="error"><h5>Cet action est irreversible</h5></span>
+        </div>
+
+        <div class="modal-footer">
+            <input type="button" value="Annuler" class="btn btn-white cancel" >
+            <input type="button" value="Supprimer" class="btn btn-danger delete-button" del-endpoint="{% url 'delete-fi' %}">
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $(".table-button.delete").on("click" , function(e){
+                e.preventDefault();
+
+                let id = $(this).attr("fi-id")
+                console.log($(this))
+
+                $("#deleteModal .delete-button").attr("fi-id"  , id)
+
+                $("#deleteModal").modal('show')
+            })
+
+
+            $("#deleteModal .delete-button").on("click" , function(e){
+                e.preventDefault();
+
+                data = [{name:"fi_id" , value:$(this).attr("fi-id")} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr("del-endpoint"),
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        window.location = window.location.href
+                    },
+                    error: function(error){
+                        console.log(error)
+                        
+                    }
+                });
+                
+            })
+
+            $("#deleteModal .cancel").on("click" , function(e){
+                e.preventDefault();
+
+                $("#deleteModal").modal('hide')
+                
+            })
+
+
+
+        })
+
+
+
+    </script>
+{% endblock %}

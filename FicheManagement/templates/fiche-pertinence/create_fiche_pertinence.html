@@ -1,0 +1,622 @@
+
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Creer une fiche de pertinence" %}
+{% endblock %}
+
+
+
+{% block content %}
+
+    <section class="content-header row">
+        <div class="col-sm-6">
+            <h1>Création d'une fiche de pertinence</h1>
+        </div>
+        <span class="successToastr"></span>
+        
+    
+    </section>
+
+    <style>
+        .signature-pad {
+            border: 1px solid gray; 
+            left: 0;
+            top: 0;
+            width:400px;
+            height:200px;
+            background-color: white;
+        }
+        
+
+    </style>
+     
+     
+     <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-success">
+                        
+                        <div class="card-body">
+                            <form id="msform" action="{% url 'create-fiche-pertinence' fi.id %}">{% csrf_token %}
+                                <input name="step" id="step" class="step" value="{{step}}" hidden/>
+                                <ul id="progressbar">
+                                    <li class="active" id="account"></li>
+                                    <li id="personal"></li>
+                                    <li id="payment"></li>
+                                </ul>
+                                <fieldset>
+                                    
+                                    <div class="form-group">
+                                        <label for="ref_fp_di">1. Reférence de la Fiche de Pertinence</label>
+                                    
+                                        
+                                        <input type="text" name="ref_fp" id="ref_fp_di" class="form-control" value="{{ref_fp}}" readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ref_fi">2. Reférence de la fiche d'information associée</label>
+                                        <input type="text" name="ref_fi" class="form-control" value="{{fi.ref_fiche}}"readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="date_ren">3. Date de Renseignement</label>
+                                        <input type="text"  id="date_ren" name="date_ren" class="form-control" readonly="readonly" value='{% now "d/m/Y" %}''>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="des">4. Désignation de l'illégalité présumée</label>
+                                        <textarea name="designation_illegalite" id="des" cols="20" rows="7" class="form-control" readonly="readonly">{{fi.soupicious_infraction}}
+                                    </textarea>
+                                    </div>
+                                    <span class="invalid text-danger"></span>
+                                    <div class="form-group">
+                                        <label for="denonciateur">5. Dénonciateur.trice (Nom, Prénom, Contact et fonction)</label>
+                                        <input type="text" name="denonciateur" id="denonciateur" class="form-control" readonly = "readonly" value="{{fi.entite}}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="domaine">6. Titre concerné/Domaine forestier concerné</label>
+                                        <input type="text" name="domaine"  id="domaine" class="form-control" readonly = "readonly" value="{{fi.title_exploitation}}">
+                                        
+                                    </div>
+                                    <input type="button"  class="btn btn-success next" value="Suivant"/>
+                                </fieldset>
+                                <fieldset>
+                                    <!--  Valeur de la reference -->
+                                    <input value="" name="id_fp" class="id_fp" type="text" hidden>
+                                    
+                                    <span class="text-danger invalid"></span>
+                                    <div class="form-group">
+                                        <label for="contexte">7. Contexte(Bref compte rendu de l'alerte reçue)</label>
+                                        <textarea name="contexte" id="contexte" cols="30" rows="10" class="form-control" ></textarea>
+                                    </div>
+                                    <span class="text-danger invalid"></span>
+                                    <div class="form-group">
+                                        <label for="date_demarage">8. Date de démarrage de l'exploitation</label>
+                                        <input type="date" name="date_demarage" id="date_demarage" class="form-control" required>
+                                    </div>
+                                    <span class="invalid text-danger"></span>
+                                    <div class="form-group">
+                                        <label>9. Pertinence d'une mission d'OIE (Est-il pertinent d'organiser une mission d'OIE pour ce cas? Justifier la réponse)
+                                        </label>
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="pertinence" id="oui" value=1>
+                                                <label  class="form-check-label">Oui</label>  
+                                                <span class="checkResult"></span>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="pertinence" id="non" value=0>
+                                                <label  class="form-check-label">Non</label>   
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contexte">10. Priorité</label>
+                                        <textarea name="priorite" id="priorite" cols="30" rows="10" class="form-control" required></textarea>
+                                    </div>
+                                    <input type="button"  class=" prev action-button-previous" value="Précedent"/>
+                                    <input type="button"  class="btn btn-success save-fiche" value="Suivant"/>
+                                </fieldset>
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <input value="" name="id_fp" class="id_fp" type="text" hidden>
+
+                                    <div class="">
+                                                
+                                        <label class="col-md-12">Signez la fiche pour validation <br></label>
+
+                                        <div class="alert alert-warning" style="font-style: italic;"><i class="fas fa-exclamation-triangle"></i> Attention : En signant cette fiche, elle sera directement transmise au responsable de l'OSC et vous ne pourrez plus la modifier !!!  </div>
+
+                                        
+                                        <div id="signature" class="col-md-12 signature-pad"></div>
+                                        <textarea id="signed" name="signed" style="display: none"></textarea>
+                                    </div>
+                                    <button id="clear" class="btn btn-danger">Effacer</button>
+
+                                    <input type="button" name="previous" class="previous action-button-previous" value="Precedent"/>
+                                    <input type="button" id="sign-btn" class="save-sign essai btn btn-success " data-action="save-png" value="Envoyer la fiche au responsable de l'OSC"/>
+                                </fieldset>
+                                
+                                <fieldset class="success">
+                                    <div class="form-group">
+                                        <h2 class="fs-title text-center">Succès !</h2>
+                                        <br>
+                                        
+                                        <div class="row justify-content-center">
+                                            <div class="col-3">
+                                                <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image">
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <div class="row justify-content-center">
+                                            <div class="col-7 text-center">
+                                                <h5>Fiche de pertinence  enregistrée avec succès</h5>
+                                            </div>
+                                        </div>
+
+                                        <a href="{% url 'fiche-pertinence-registry' 1 %}" class="view-end btn btn-success"> Terminer </a>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% block js %}
+    <script src="{% static 'js/shared.js' %}"></script>
+{% endblock %}
+<script>
+   
+    $(document).ready(function(){
+        var current_fs, next_fs;
+
+
+        $("#oui").change(function (e) { 
+            e.preventDefault();
+            $('.checkResult').html(`<label for=""><br>Cocher les cases ayant les éléments qui justifient la pertinence de faire une mission d'OIE </label><br>
+            <input type="checkbox" name="accesSite" value=1>  Site de l'exploitation accessible <br>
+            <input type="checkbox" name="encourActivite" value=1>  Site de l'exploitation forestière est en cours d'activité <br>
+            <input type="checkbox" name="arretActivite" value=1>  Site de l'exploitation forestière en arret d'activité <br>
+            <input type="checkbox" name="niveau" value=1>  Niveau de sévérité des indices qui constituent l'objet de la dénonciation 
+            <select name="niveauSeverite"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+            <br>
+            <input type="checkbox" name="justif" id="justif" value=1> Eléments justifiants ce niveau de sévérité <input type="text" name="justifNiveauSeverite" id="justifNiveauSeverite" class="form-control form-control-border border-width-2" placeholder="Justificatif niveau de securite"> <br>
+            `);
+        
+            $('.checkResult').show()
+        
+        });
+        $("#non").change(function (e) { 
+            e.preventDefault();
+            $(".checkResult").hide();
+        });
+
+        var options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-full-width",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+        
+
+
+        //clique sur le bouton enregistrer
+        $('.next').on('click', function (e) {
+            e.preventDefault();
+
+            current_fs = $(this).parent();
+            next_fs = current_fs.next();
+
+            $des = $('#des').val();
+            if ($des == null || $des == ""  ){
+                $('.invalid').text('ce champ est obligatoire');
+            }else{
+                var donnee = current_fs.serializeArray()
+                var step = $("#step").val()
+                donnee.push({name : 'csrfmiddlewaretoken', value : $("input[name='csrfmiddlewaretoken']").val()})
+                donnee.push({name: "step", value : step})
+
+                if (step == "1"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            console.log(response)
+                            $("#step").val(response["next-step"]) 
+                            $(".id_fp").val(response["id_fp"])
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            next_fs.show(); 
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
+                        },
+                        error: function(error){
+                            console.log(error)
+                            toastr.options = options
+                            toastr["error"](error, "SNOIE ERROR")
+                            
+                        }
+                    });
+                }
+
+            }
+
+          /*  
+            if (step == "1"){
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href,
+                    data: donnee,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        $("#step").val(response["next-step"]) 
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        
+                        next_fs.show(); 
+                        current_fs.animate({opacity: 0}, {
+                            step: function(now) {
+                                // for making fielset appear animation
+                                opacity = 1 - now;
+    
+                                current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                });
+                                next_fs.css({'opacity': opacity});
+                            }, 
+                            duration: 600
+                        });
+                    },
+                    error: function(error){
+                        console.log(error)
+                        toastr.options = options
+                        toastr["error"](error, "SNOIE ERROR")
+                        
+                    }
+                });
+            }
+            else if (step == "2"){
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href,
+                    data: donnee,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        $("#step").val(response["next-step"]) 
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        
+                        next_fs.show(); 
+                        current_fs.animate({opacity: 0}, {
+                            step: function(now) {
+                                // for making fielset appear animation
+                                opacity = 1 - now;
+    
+                                current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                });
+                                next_fs.css({'opacity': opacity});
+                            }, 
+                            duration: 600
+                        });
+                    },
+                    error: function(error){
+                        console.log(error)
+                        toastr.options = options
+                        toastr["error"](error, "SNOIE ERROR")
+                        
+                    }
+                });
+            }
+            else if(step == "3"){
+                $.ajax({
+                    type: "POST",
+                    url: window.location.href,
+                    data: donnee,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        $("#step").val(response["next-step"]) 
+                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                        
+                        next_fs.show(); 
+                        current_fs.animate({opacity: 0}, {
+                            step: function(now) {
+                                // for making fielset appear animation
+                                opacity = 1 - now;
+    
+                                current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                });
+                                next_fs.css({'opacity': opacity});
+                            }, 
+                            duration: 600
+                        });
+                    },
+                    error: function(error){
+                        console.log(error)
+                        toastr.options = options
+                        toastr["error"](error, "SNOIE ERROR")
+                        
+                    }
+                });
+            }
+
+           */
+        });
+
+        //clique sur le bouton précedent 
+        $(".previous").click(function (e) { 
+            e.preventDefault();
+            current_fs = $(this).parent();
+            prev_fs = current_fs.prev();
+            var current_step = Number($("#step").val())
+            $("#step").val(current_step-1)
+            prev_fs.show();
+            current_fs.hide();
+            
+        });
+
+
+        $(".save-sign").click(function(e){
+            current_fs = $(this).parent();
+            next_fs = current_fs.next();
+
+            var donnee = current_fs.serializeArray()
+            var step = $("#step").val()
+            donnee.push({name: "step", value : step})
+
+            $.ajax({
+                type: "POST",
+                url: window.location.href,
+                data: donnee,
+                dataType: "JSON",
+                success: function (response) { 
+                    $("#step").val(response["next-step"]) 
+                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                    
+                    next_fs.show(); 
+                    current_fs.animate({opacity: 0}, {
+                        step: function(now) {
+                            // for making fielset appear animation
+                            opacity = 1 - now;
+
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+                            next_fs.css({'opacity': opacity});
+                        }, 
+                        duration: 600
+                    });
+                },
+                error: function(error){
+                    console.log(error)
+                    toastr.options = options
+                    toastr["error"](error, "SNOIE ERROR")
+                    
+                }
+            });
+
+        })
+
+        $(".save-fiche").click(function(e){
+            current_fs = $(this).parent();
+            next_fs = current_fs.next();
+
+            var donnee = current_fs.serializeArray()
+            var step = $("#step").val()
+            donnee.push({name : 'csrfmiddlewaretoken', value : $("input[name='csrfmiddlewaretoken']").val()})
+            donnee.push({name: "step", value : step})
+
+            $.ajax({
+                type: "POST",
+                url: window.location.href,
+                data: donnee,
+                dataType: "JSON",
+                success: function (response) { 
+                    $("#step").val(response["next-step"]) 
+                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                    
+                    next_fs.show(); 
+                    current_fs.animate({opacity: 0}, {
+                        step: function(now) {
+                            // for making fielset appear animation
+                            opacity = 1 - now;
+
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+                            next_fs.css({'opacity': opacity});
+                        }, 
+                        duration: 600
+                    });
+                },
+                error: function(error){
+                    console.log(error)
+                    toastr.options = options
+                    toastr["error"](error, "SNOIE ERROR")
+                    
+                }
+            });
+        })
+
+
+        $('.valider').on('click', function(e){
+            e.preventDefault(); 
+
+            current_fs = $(this).parent()
+            next = $('.success');
+            var id_fp = $('.id_fp').val(); 
+            var step = $("#step").val()
+            donnee = [{name : "id_fp" , value : id_fp}]
+            donnee.push({name : 'csrfmiddlewaretoken', value : $("input[name='csrfmiddlewaretoken']").val()})
+            donnee.push({name: "step", value : step})
+            
+
+            $.ajax({
+                type: "POST",
+                url: window.location.href,
+                data: donnee,
+                dataType: "JSON",
+                success : function(response){
+                    next.show();
+                    current_fs.hide();
+                    
+                }
+            })
+        });
+        
+    
+  
+        var signature = $('#signature').signature({
+            syncField: '#signed',
+            syncFormat: 'PNG'
+        });
+        $("#clear").click(function (e) { 
+            e.preventDefault();
+            signature.signature('clear')
+            $("#signed").val('');
+        });
+        /*$('.valid').on('click', function(e){
+            e.preventDefault(); 
+            var sign = $('#signed').val() ;
+            var id_fi = $('#id_fi').val();
+
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('Ficheinformation/validation_obs') ?>",
+                data: {id_fi : id_fi, signed:sign},
+                dataType: "JSON",
+                success : function(response){
+                          
+                console.log(response); 
+                // Je crée le lien 
+		        var elm = document.createElement('a');
+                // J'ajoute le href
+                var url_test = "<?= base_url() ?>" ;  
+		        elm.href= window.location.origin +"/fiche-pertinence/ajouter/"+ response.id_fi;
+               // elm.classList.add('btn'); 
+                elm.classList.add('btn-info', 'add-space'); 
+
+                // Je crée le contenu 
+                var contenu = document.createTextNode('Créer la fiche de pertinence associée à cette fiche d\'information');
+
+                elm.appendChild(contenu);
+                
+
+                // On insère le lien dans le body
+                var link = document.getElementById('lien'); 
+                var elmReturn = link.appendChild(elm);
+
+                // On vérifie que c'est le même objet qui est retourné
+                console.log(elmReturn.constructor);
+                console.log('Elément retourné => '+elmReturn.href);
+
+                
+                }
+            })
+
+            current_fs = $(this).parent();
+            next_fs = current_fs.next(); 
+  
+            next_fs.show();
+            current_fs.hide();
+        }); */
+       
+
+        $('#region').select2({
+        allowClear: true,
+        placeholder: {
+            id: "0",
+            text:"Choisir dans la liste",
+            selected:'selected'
+          },
+    });
+
+    $('#department').select2({
+        allowClear: true,
+        placeholder: {
+            id: "0",
+            text:"Choisir dans la liste",
+            selected:'selected'
+          },
+    })
+    $('#arrondissement').select2({
+        allowClear: true,
+        placeholder: {
+            id: "0",
+            text:"Choisir dans la liste",
+            selected:'selected'
+          },
+    })
+       
+        $('#region').on('select2:select', function (e) {
+            var data = e.params.data;
+            var region_id = data.id
+            var departments = load_departments(region_id)
+            
+            $('#department').select2().empty().select2({
+                data:[{"id":0, "text":"Choisir dans la liste"}].concat(departments.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+            }).trigger("change");
+
+            $(".department").removeAttr("hidden")
+        })
+
+
+
+        
+
+        $('#department').on('select2:select', function (e) {
+            var data = e.params.data;
+            var department_id = data.id
+            var arrs = load_arrs(department_id)
+
+            $('#arrondissement').select2().empty().select2({
+                data: [{"id":0, "text":"Choisir dans la liste"}].concat(arrs.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+            }).trigger("change");
+
+            $(".arrondissement").removeAttr("hidden")
+        });
+
+
+        $('#arrondissement').on('select2:select', function (e) {
+            
+            $(".village").removeAttr("hidden")
+        });
+       
+    });
+</script>
+
+{% endblock%}

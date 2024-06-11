@@ -1,0 +1,37 @@
+$color-gr : #28a745;
+$color-yl: yellow;
+$color-red: red;
+
+.navbar-green{
+    background-color: $color-gr;
+}
+nav-link > ion-icon {
+    color: $color-yl;
+}
+.deconnexion > ion-icon{
+    color: $color-red;
+}
+.text-center{
+    text-align: center;
+}
+.description > p{
+    display: block;
+    margin-top: 150px;
+    color: white;
+}
+.description{
+    background-color: $color-gr;
+}
+.nav-link .fa-phone, .nav-link .fa-envelope{
+    margin: 0.5rem;
+}
+.contact-us{
+    border-radius: 15px;
+    border: 2px solid white;
+    transition: 0.4s;
+    float: right;
+}
+.contact-us:hover{
+    background-color: white;
+    color: black;
+}

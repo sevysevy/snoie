@@ -1,0 +1,147 @@
+.contact-us {
+    border-radius: 15px;
+    border: 2px solid white;
+    transition: 0.4s;
+    float: right;
+  }
+
+  .contact-us:hover {
+    background-color: white;
+    color: black;
+  }
+
+.country {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-weight: 600;
+    color: #38493a;
+    cursor: pointer;
+}
+
+.country-container {
+    display: flex;
+}
+
+.country:hover {
+    scale: 1.05;
+    cursor: pointer;
+    box-shadow: 0px 0px .2rem 0;
+}
+
+.login-card {
+    height: 550px;
+  }
+
+  .login-image {
+    padding: 0 30%;
+  }
+
+  .login-image img{
+    width: 200px;
+  }
+
+  .login-box-msg {
+    
+    font-size: 17px;
+    font-weight: 600;
+    color: #2e4f41;
+  }
+
+.modal-header {
+    justify-content: center !important;
+}
+
+.partenaire {
+    justify-content: center;
+  }
+
+  .partenaire img {
+    height : 70px ; 
+    width : 100% ; 
+    object-fit : contain ; 
+}
+
+body{
+    min-height: 100%;
+    /*overflow-x: hidden;*/
+}
+
+.main-sidebar
+{
+  height: 100vh !important;
+}
+
+.empty-table
+{
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.required
+{
+  color: #f73232;
+}
+
+.hidden
+{
+  display: none;
+}
+
+.field-error{
+  border-color: #f73232;
+}
+
+.text-danger
+{
+  color: #f73232 !important;
+}
+
+.select2-selection.select2-selection--single
+{
+  padding: 5px 5px;
+  height: 35px;
+}
+
+.select2.select2-container.select2-container--default
+{
+  width: 100% !important;
+}
+
+.table-button.delete{
+  color:#f73232 !important;
+}
+
+.table-button.view{
+  color:#2dca0e !important;
+}
+
+.pagination{
+  float: right;
+  
+}
+
+.pagination-button{
+  margin: 5px;
+  border: 1px solid #1b5691;
+  border-radius: 3px;
+  box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 3px rgba(0,0,0,.2);
+  width: 25px;
+  text-align: center;
+  color: #1b5691;
+}
+
+.pagination-button.current{
+  margin: 5px;
+  border: 1px solid #878a8d;
+  border-radius: 3px;
+  box-shadow: unset;
+  width: 25px;
+  text-align: center;
+  color: #878a8d;
+}
+

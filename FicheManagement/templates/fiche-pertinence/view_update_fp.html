@@ -1,0 +1,750 @@
+
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Détails fiche de pertinence" %}
+{% endblock %}
+
+
+
+{% block content %}
+
+    <section class="content-header row">
+        <div class="col-sm-12">
+            <h1>Détails fiche de pertinence</h1>
+        </div>
+        
+    </section>
+
+    <style>
+        .signature-pad {
+            border: 1px solid gray; 
+            left: 0;
+            top: 0;
+            width:400px;
+            height:200px;
+            background-color: white;
+        }
+        
+
+    </style>
+     
+    <hr>
+     <section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-12">
+
+                    {% if mode == "edit" %}
+                        <span class="">
+                            <input type="button" value="Terminer les Modifications" class="btn btn-primary view-mode">
+                        </span>
+                    {% endif %}
+
+
+                    {% if fp.state == "send_to_resp"  and request.user.userprofile.role.name_code == 'responsable' %}
+                        <span class="">
+                            <input type="button" value="Signer et valider la fiche" class="btn btn-warning btn-sm fp-validate">
+                        </span>
+                    {% endif %}
+
+                    {% if fp.state == "draft" and fp.observator == request.user.userprofile %}
+                        <span class="">
+                            <input type="button" value="Signer et envoyer au responsable" class="btn btn-warning btn-sm fp-validate">
+                        </span>
+                    {% endif %}
+
+                    {% if fp.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnateur'  %}
+                        <span class="">
+                            <input type="button" value="Signer la fiche" class="btn btn-warning btn-sm fp-validate">
+                        </span>
+                    {% endif %}
+                    
+                    <div class="dropdown float-right">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        Options
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            {% if fp.state == "draft" and fp.observator == request.user.userprofile %}
+                                <a class="dropdown-item fp-validate" href="#">Signer et envoyer au responsable</a>
+                            {% endif %}
+
+                            {% if fp.state == "send_to_resp"  and  request.user.userprofile.role.name_code == 'responsable' %}
+                                <a class="dropdown-item fp-validate" href="#">Signer et valider la fiche</a>
+                            {% endif %}
+
+                            {% if fp.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnateur' %}
+                                <a class="dropdown-item fp-validate" href="#">Signer la fiche</a>
+                            {% endif %}
+                            
+                            <a class="dropdown-item {% if fp.state == "draft" %} edit-mode {% else %} disabled {% endif %}" href="#">Modifier la fiche de pertinence</a>
+
+                            <a class="dropdown-item {% if fp.state == "draft" %} delete {% else %} disabled {% endif %}" href="#">Supprimer</a>
+                        </div>
+                    </div>
+                        <!--span class="">
+                            <input type="button" value="Modifier la fiche d'iformation" class="btn btn-warning edit-mode">
+                            <input type="button" value="Supprimer" class="btn btn-danger delete">
+                        </span-->
+                    
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Fiche: {{fp.ref_fiche}}
+                            </h3>
+
+                            {% if fp.state == 'draft' %}
+                                <span class="float-right badge bg-secondary">
+                                    Statut: Brouillon
+                                </span>
+                            {% elif fp.state == 'send_to_resp' %}
+                                <span class="float-right badge bg-primary">
+                                   Statut: Envoyée au responsable
+                                </span>
+                            {% elif fp.state == 'validated_org' %}
+                                <span class="float-right badge bg-success">
+                                   Statut: Validée par un responsable
+                                </span>
+
+                            {% elif fp.state == 'validated_coord' %}
+                                <span class="float-right badge bg-success">
+                                   Statut: Signée par la coordination
+                                </span>
+                            {% elif fp.state == 'archived' %}
+                                <span class="float-right badge bg-danger">
+                                   Statut: Archivée
+                                </span>
+                            {% endif %}
+
+
+                        </div>
+                        <div class="card-body">
+                            <form id="msform" action="{% url 'view-update-fp' fp.id %}">{% csrf_token %}
+                                <input name="step" id="step" class="step" value="{{step}}" hidden/>
+                                <input type="text"  name="state" id="state" class="hidden" value="{{fp.state}}"/>
+                                <input type="text"  name="state" id="state" class="hidden" value="{{fp.state}}"/>
+                                <input id="back_date_demarage"  class="back_date_demarage" name="back_date_demarage" value="{{fp.date_demarage | date:'Y-m-d'}}" hidden>
+                                <input type="text"  name="mode" id="mode" class="hidden" value="{{mode}}"/>
+                                <ul id="progressbar">
+                                    <li class="active" id="account"></li>
+                                    <li id="personal"></li>
+                                    <li id="payment"></li>
+                                </ul>
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="ref_fp_di">1. Reférence de la Fiche de Pertinence</label>
+                                    
+                                        
+                                        <input type="text" name="ref_fp" id="ref_fp_di" class="form-control" value="{{fp.ref_fiche}}" readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ref_fi">2. Reférence de la fiche d'information associée</label>
+                                        <input type="text" name="ref_fi" class="form-control" value="{{fp.fiche_information.ref_fiche}}"readonly="readonly">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="date_ren">3. Date de Renseignement</label>
+                                        <input type="text"  id="date_ren" name="date_ren" class="form-control" readonly="readonly" value='{{fp.date_renseignement}}'>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="des">4. Désignation de l'illégalité présumée</label>
+                                        <textarea name="designation_illegalite" id="des" cols="20" rows="7" class="form-control" readonly="readonly">{{fp.fiche_information.soupicious_infraction}}
+                                    </textarea>
+                                    </div>
+                                    <span class="invalid text-danger"></span>
+                                    <div class="form-group">
+                                        <label for="denonciateur">5. Dénonciateur.trice (Nom, Prénom, Contact et fonction)</label>
+                                        <input type="text" name="denonciateur" id="denonciateur" class="form-control" readonly = "readonly" value="{{fp.fiche_information.entite}}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="domaine">6. Titre concerné/Domaine forestier concerné</label>
+                                        <input type="text" name="domaine"  id="domaine" class="form-control" readonly = "readonly" value="{{fp.fiche_information.title_exploitation}}">
+                                        
+                                    </div>
+                                    <input type="button"  class="btn btn-success edit-next" value="Suivant"/>
+                                </fieldset>
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <!--  Valeur de la reference -->
+                                    <input name="id_fp" class="id_fp" type="text" value="{{fp.id}}" hidden>
+                                    
+                                    <span class="text-danger invalid"></span>
+                                    <div class="form-group">
+                                        <label for="contexte">7. Contexte(Bref compte rendu de l'alerte reçue)</label>
+                                        <textarea name="contexte" id="contexte" cols="30" rows="10" class="form-control" >
+                                            {{fp.contexte}}
+                                        </textarea>
+                                    </div>
+                                    <span class="text-danger invalid"></span>
+                                    <div class="form-group">
+                                        <label for="date_demarage">8. Date de démarrage de l'exploitation</label>
+                                        <input type="date" name="date_demarage" id="date_demarage" class="form-control" required>
+                                    </div>
+                                    <span class="invalid text-danger"></span>
+                                    <div class="form-group">
+                                        <label>9. Pertinence d'une mission d'OIE (Est-il pertinent d'organiser une mission d'OIE pour ce cas? Justifier la réponse)
+                                        </label>
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="pertinence" id="oui" value=1 {% if fp.pertinence == True %} checked="checked" {% endif %} {% if mode == 'view' %} disabled {% endif %}>
+                                                <label  class="form-check-label">Oui</label>  
+                                                <span class="checkResult">
+
+                                                    {% if fp.pertinence == True %}
+                                                    <label for=""><br>Cocher les cases ayant les éléments qui justifient la pertinence de faire une mission d'OIE </label><br>
+                                                    <input type="checkbox" name="accesSite" value=1 {% if mode == 'view' %} disabled {% endif %} {% if fp.access_site == True %} checked {% endif %}>  Site de l'exploitation accessible <br>
+                                                    <input type="checkbox" name="encourActivite" value=1 {% if mode == 'view' %} disabled {% endif %} {% if fp.encours_activite == True %} checked {% endif %}>  Site de l'exploitation forestière est en cours d'activité <br>
+                                                    <input type="checkbox" name="arretActivite" value=1 {% if mode == 'view' %} disabled {% endif %} {% if fp.arret_activite == True %} checked {% endif %}>  Site de l'exploitation forestière en arret d'activité <br>
+                                                    <input type="checkbox" name="niveau" value=1 {% if mode == 'view' %} disabled {% endif %} {% if fp.niveau == True %} checked {% endif %}>  Niveau de sévérité des indices qui constituent l'objet de la dénonciation 
+                                                    <select name="niveauSeverite" {% if mode == 'view' %} disabled {% endif %}>
+                                                        <option {% if fp.niveauSeverite == 1 %} selected {% endif %}>1</option>
+                                                        <option {% if fp.niveauSeverite == 2 %} selected {% endif %}>2</option>
+                                                        <option {% if fp.niveauSeverite == 3 %} selected {% endif %}>3</option>
+                                                        <option {% if fp.niveauSeverite == 4 %} selected {% endif %}>4</option>
+                                                        <option {% if fp.niveauSeverite == 5 %} selected {% endif %}>5</option></select>
+                                                    <br>
+                                                    <input type="checkbox" name="justif" id="justif" value=1 {% if mode == 'view' %} disabled {% endif %} {% if fp.justif == True %} checked {% endif %}> Eléments justifiants ce niveau de sévérité 
+                                                    <input type="text" name="justifNiveauSeverite" id="justifNiveauSeverite" 
+                                                           class="form-control form-control-border border-width-2" 
+                                                        placeholder="Justificatif niveau de securite" value="{{fp.severity_justif}}" {% if mode == 'view' %} disabled {% endif %}> <br>
+
+                                                    {% endif %}
+
+                                                </span>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="pertinence" id="non" value=0 {% if mode == 'view' %} disabled {% endif %} {% if fp.pertinence == False %} checked="checked" {% endif %}>
+                                                <label  class="form-check-label">Non</label>   
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contexte">10. Priorité</label>
+                                        <textarea name="priorite" id="priorite" cols="30" rows="10" class="form-control" required>{{fp.priority}}</textarea>
+                                    </div>
+                                    <input type="button"  class=" prev edit-previous action-button-previous" value="Précedent"/>
+
+                                    <input type="button"  class="btn btn-success edit-next" value="Suivant"/>
+                                </fieldset>
+
+                                {% if mode == "view" %}
+
+
+                                    <fieldset class="table-responsive">
+                                        
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th colspan="2"><strong>Renseignement OSC Locale</strong></th>
+                                                <th colspan="2"><strong>Validation par la Coordination</strong></th>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Noms & Prénoms </td>
+                                                <td><span id="nom_user">{{fp.observator.fullName}} </span></td>
+                                                <td class="column-title">Nom & Prénoms</td>
+                                                <td >
+                                                    {% if fp.coordinator %}
+                                                        <span id="nom_coo">{{fp.coordinator.fullName}}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning">Pas encore disponible</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Profil</td>
+                                                <td id="profil_obs">Observateur</td>
+                                                <td class="column-title">Profil</td>
+                                                <td id="profil_coo"> Coordination</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Date de signature par l'observateur</td>
+                                                <td ><span id="date_sign_obs"> {% if fp.date_sign_obs %} {{fp.date_sign_obs | date:'d/m/Y'}} {% endif %}</span></td>
+                                                <td class="column-title">Date de signature par la coordination</td>
+                                                <td ><span id="date_sign_coo">{% if fp.date_sign_coord %} {{fp.date_sign_coord | date:'d/m/Y'}} {% endif %}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title"> Visa </td>
+
+                                                <td>
+                                                    
+                                                    <img src="{{fp.sign_obs}}" alt="" id="sign_obs"> 
+                                                
+                                                </td>
+                                                <td class="column-title">Visa</td>
+                                                <td >
+                                                    
+                                                    <img src="{{fp.sign_coord}}" alt="" id="sign_coo"> 
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Nom & Prénoms (Responsable OSC)</td>
+                                                <td id="nom_resp">
+                                                    {% if fp.responsable %}
+                                                        <span id="nom_resp">{{fp.responsable.fullName}}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning"> Pas encore disponinle </span>
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Profil</td>
+                                                <td id="profil_resp">Responsable</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Date</td>
+                                                <td ><span id="date_sign_resp">{% if fp.date_sign_resp %} {{fp.date_sign_resp | date:'d/m/Y' }} {% endif %}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="column-title">Visa</td>
+                                                <td>
+                                                    
+                                                    <img src="{{fp.sign_resp}}" alt="" id="sign_resp">
+                                                    
+                                                </td>
+                                            </tr>
+                
+
+                                        </table>
+
+                                        <a href="{% url 'fiche-pertinence-registry' 1 %}" class="view-end btn btn-success"> Terminer </a>
+                                    </fieldset>
+
+
+
+                                {% endif %}
+
+                            {% if fp.state == "draft" and mode == "edit" %}
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <input  name="id_fp" class="id_fp" type="text" value="{{fp.id}}" hidden>
+
+                                    <div class="form-group">
+                                        
+                                        <label class="col-md-12">Signez la fiche pour validation <br></label>
+
+                                        {% if request.user.userprofil.role.name_code == "observateur" %}
+                                            <div class="alert alert-warning" style="font-style: italic;"><i class="fas fa-exclamation-triangle"></i> Attention : En signant cette fiche, elle sera directement transmise au responsable de l'OSC et vous ne pourrez plus la modifier !!!  </div>
+                                        
+                                        {% endif %}
+
+                                        <br> 
+                                        <div id="signature" class="col-md-12 signature-pad"></div>
+                                        <textarea id="signed" name="signed" style="display: none"></textarea>
+
+                                    </div>
+                                    <input type="button"  class="button-success prev action-button-previous" value="Précedent"/>
+                                    <input type="button"  class="btn btn-success valider" value="Envoyer la fiche au responsable de l'OSC"/>
+                                </fieldset>
+                                
+                                <fieldset class="success">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <h2 class="fs-title text-center">Succès !</h2>
+                                        <br>
+                                        
+                                        <div class="row justify-content-center">
+                                            <div class="col-3">
+                                                <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image">
+                                            </div>
+                                        </div>
+                                        <br><br>
+                                        <div class="row justify-content-center">
+                                            <div class="col-7 text-center">
+                                                <h5>Fiche de pertinence  enregistrée avec succès</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="sign-validate-modal" tabindex="-1" role="dialog" aria-labelledby="sign-validate-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            
+            <div class="modal-body">
+                <div class="">
+                                                
+                    <label class="col-md-12">Signer la fiche pour validation <br></label>
+
+                    {% if request.user.userprofil.role.name_code == "observateur" %}
+                        <div class="alert alert-warning" style="font-style: italic;"><i class="fas fa-exclamation-triangle"></i> Attention : En signant cette fiche, elle sera directement transmise au responsable de l'OSC et vous ne pourrez plus la modifier !!!  </div>
+                    
+                    {% endif %}
+
+                        <div id="valid-signature" class="col-md-12 signature-pad"></div>
+                        <textarea id="valid-signed" name="valid-signed" style="display: none"></textarea>
+
+                </div>
+                <button id="valid-clear" class="btn btn-danger">Effacer</button>
+            </div>
+    
+            <div class="modal-footer">
+                <input type="button" value="Annuler" class="btn btn-white cancel" >
+                <input type="button" value="Valider" class="btn btn-success valid-button" valid-endpoint="{% url 'sign-validate-fp' %}">
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        let date_demarage = document.getElementById("back_date_demarage").value;
+        document.getElementById("date_demarage").defaultValue = date_demarage;
+
+
+        $(document).ready(function(){
+            
+            let mode = $("input[name='mode']").val()
+            let state = $("#state").val()
+            
+            if (mode == 'view'){
+                $('.form-control').attr('disabled' , "")
+                
+            }
+
+            if (state == 'send'){
+                $("#sign-image").css("pointer-events", "none").css("opacity",0.5)
+            }
+
+            $('.edit-mode').on('click' , function(){
+                window.location = $("#msform").attr('action') +'?mode=edit'
+    
+            })
+
+            $('.view-mode').on('click' , function(){
+                window.location = $("#msform").attr('action')
+    
+            })
+
+            var current_fs, next_fs;
+
+        var options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-full-width",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
+
+        /********************************
+             *  Signature Debut              *
+             *                              *
+             *******************************/
+             var signature = $('#signature').signature({
+                    syncField: '#signed',
+                    syncFormat: 'PNG'
+                });
+
+                $("#clear").click(function (e) { 
+                    e.preventDefault();
+                    signature.signature('clear')
+                    $("#signed").val('');
+                });
+            /********************************
+             *  Signature FIn               *
+             *                              *
+             *******************************/
+        
+
+        //clique sur le bouton enregistrer
+        $('.edit-next').on('click', function (e) {
+            e.preventDefault();
+            let mode = $("input[name='mode']").val()
+
+            if (mode == 'view'){
+                current_fs = $(this).parent();
+                next_fs = current_fs.next();
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                next_fs.show(); 
+                current_fs.animate({opacity: 0}, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                    }, 
+                    duration: 600
+                });
+            }
+            else{
+                current_fs = $(this).parent();
+                next_fs = current_fs.next();
+                var donnee = current_fs.serializeArray()
+                var step = $("#step").val()
+                donnee.push({name: "step", value : step})
+
+                
+                if (step == "1"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            console.log(response)
+                            $("#step").val(response["next-step"]) 
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            next_fs.show(); 
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
+                        },
+                        error: function(error){
+                            console.log(error)
+                            toastr.options = options
+                            toastr["error"](error, "SNOIE ERROR")
+                            
+                        }
+                    });
+                }
+                else if (step == "2"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            console.log(response)
+                            $("#step").val(response["next-step"]) 
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            next_fs.show(); 
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
+                        },
+                        error: function(error){
+                            console.log(error)
+                            toastr.options = options
+                            toastr["error"](error, "SNOIE ERROR")
+                            
+                        }
+                    });
+                }
+                else if(step == "3"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            console.log(response)
+                            $("#step").val(response["next-step"]) 
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            next_fs.show(); 
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
+                        },
+                        error: function(error){
+                            console.log(error)
+                            toastr.options = options
+                            toastr["error"](error, "SNOIE ERROR")
+                            
+                        }
+                    });
+                }
+
+            }
+        });
+
+        //clique sur le bouton précedent 
+        $(".edit-previous").click(function (e) { 
+            e.preventDefault();
+            current_fs = $(this).parent();
+            previous_fs = current_fs.prev();
+
+            var current_step = Number($("#step").val())
+            $("#step").val(current_step-1)
+            previous_fs.show();
+            current_fs.hide();
+
+            current_fs.animate({opacity: 0}, {
+                step: function(now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_fs.css({'opacity': opacity});
+                }, 
+                duration: 600
+            });
+            
+        });
+
+
+        })
+
+        $('.valider').on('click', function(e){
+            e.preventDefault(); 
+
+            current_fs = $(this).parent()
+            next = $('.success');
+            var donnee = current_fs.serializeArray()
+            var step = $("#step").val()
+            donnee.push({name: "step", value : step})
+            
+
+            $.ajax({
+                type: "POST",
+                url: window.location.href,
+                data: donnee,
+                dataType: "JSON",
+                success : function(response){
+                    console.log(response)
+                    $("#step").val(response["next-step"]) 
+                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                    
+                    next_fs.show(); 
+                    current_fs.animate({opacity: 0}, {
+                        step: function(now) {
+                            // for making fielset appear animation
+                            opacity = 1 - now;
+
+                            current_fs.css({
+                                'display': 'none',
+                                'position': 'relative'
+                            });
+                            next_fs.css({'opacity': opacity});
+                        }, 
+                        duration: 600
+                    });
+                    
+                }
+            })
+        });
+    
+    
+
+        /********************************
+             *  Signature valid Debut              *
+             *                              *
+             *******************************/
+             var signature = $('#valid-signature').signature({
+                    syncField: '#valid-signed',
+                    syncFormat: 'PNG'
+                    
+                });
+                $("#valid-clear").click(function (e) { 
+                    e.preventDefault();
+                    signature.signature('clear')
+                    $("#valid-signed").val('');
+                });
+            /********************************
+             *  Signature valid FIn               *
+             *                              *
+             *******************************/
+
+
+            $(".fp-validate").on("click" , function(e){
+                    e.preventDefault();
+
+                    let id = $("#id_fp").val()
+                    console.log(id)
+
+                    $("#sign-validate-modal .valid-button").attr("fp-id"  , id)
+
+                    $("#sign-validate-modal").modal('show')
+            })
+
+            $("#sign-validate-modal .valid-button").on("click" , function(e){
+                e.preventDefault();
+                
+                data = [{name:"fp_id" , value: $(".id_fp").val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()} , {name: "valid-signed" , value:$("#valid-signed").val()}]
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr("valid-endpoint"),
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) { 
+                        window.location = $("#msform").attr('action')
+                    },
+                    error: function(error){
+                        console.log(error)
+                        
+                    }
+                });
+            })
+
+            $("#sign-validate-modal .cancel").on("click" , function(e){
+                e.preventDefault();
+
+                $("#sign-validate-modal").modal('hide')
+                
+            })
+    
+    
+    
+    </script>
+
+
+{% endblock%}

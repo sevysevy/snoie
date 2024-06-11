@@ -1,0 +1,427 @@
+
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Detail alert" %}
+{% endblock %}
+
+
+{% block content %}
+
+    <section class="content-header row">
+        <div class="col-sm-12">
+            <h1>Détails de l'alerte</h1>
+            {% if mode == "view" %}
+                <span class="float-right">
+                    <input type="button" value="Modifier l'alerte" class="btn btn-warning edit-mode">
+                    <input type="button" value="Supprimer" class="btn btn-danger delete">
+                </span>
+            {% else %}
+                <span class="float-right">
+                    <input type="button" value="Terminer les Modifications" class="btn btn-primary view-mode">
+                </span>
+            {% endif %}
+            
+        </div>
+    
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            
+            <div class="row">
+                <div class="col-12">
+                    
+                    <div class="card card-success mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Détails de l'alerte</h3>
+                            
+                        </div>
+            
+                        <div class="card-body">
+                            <input name="alert-home" id="alert-home"  value="{% url 'alerts-registry' 1%}" hidden/>
+
+                            <form action="{% url 'view-update-alert' alert.id %}" method="POST" id="msform">
+                                
+
+                                
+                                <ul id="progressbar">
+                                    <li class="active" id="account"></li>
+                                    <li id="personal"></li>
+                                    <li id="payment"></li>
+                                </ul>
+
+                                
+                        
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <input type="text"  name="alert_id" id="alert_id" value="{{alert.id}}" class="hidden"/>
+                                    <input type="text"  name="current_date" id="current_date" class="hidden" value="{{alert.date_alert | date:'Y-m-d'}}"/>
+                                    <input type="text"  name="mode" id="mode" class="hidden" value="{{mode}}"/>
+                                    <input type="text"  name="dep_id" id="dep_id" class="hidden" value="{{alert.department.id}}"/>
+                                    <input type="text"  name="arr_id" id="arr_id" class="hidden" value="{{alert.arrondissement.id}}"/>
+                                    <input type="text"  name="reg_id" id="reg_id" class="hidden" value="{{alert.region.id}}"/>
+                                    <input name="step" id="step" class="step" value="{{step}}" hidden/>
+                                    <div class="form-group">
+                                        <label for="date_alert">Date <span class="required">*</span></label>
+                                        <input type="date" name="date_alert" id="date_alert" class="form-control"  required="" >
+                                        <span class="invalid text-danger date-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="alert_declaration">Déclaration du dénonciateur <span class="required">*</span></label>
+                                        <textarea name="alert_declaration" id="alert_declaration" class="form-control" rows="5" required="" > {{alert.declaration}}  </textarea>
+                                        <span class="invalid text-danger alert-declaration-error"></span>
+                                    </div>
+                                    
+                                    <input type="button" name="edit-next" class="edit-next action-button" value="Suivant">
+                                    {% if mode == "edit" %}
+                                        <span class="bold info"> En cliquant ici vos modifications seront enregistrées (*)</span>
+                                    {%endif %}
+                                    
+                                </fieldset>
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="region">Région <span class="required">*</span></label>
+                                        <select name="region" id="region" class="form-control" required="">
+                                            <option value="0"></option>
+                                            {% for region in regions %}
+                                                <option value="{{region.id}}" {% if alert.region == region %} selected="selected" {% endif %}>{{region.name}}</option>
+                                            {% endfor %}
+                                                
+                                        </select>
+                                        
+                                    </div>
+                                    <div class="form-group department" >
+                                        <label for="dep">Département <span class="required">*</span></label>
+                                        <select name="department" id="department" class="form-control" required="">
+                                            <option value="0"></option>
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group arrondissement" >
+                                        <label for="arr">Arrondissement <span class="required">*</span></label>
+                                        <select name="arrondissement" id="arrondissement" class="form-control" required="">
+                                            <option value="0"></option>
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group village">
+                                        <label for="village">Village <span class="required">*</span></label>
+                                        <input type="text" name="village" id="village" class="form-control" required="" value="{{alert.village}}">
+                                    </div>
+                        
+                                    <input type="button" name="edit-previous" class="edit-previous action-button-previous" value="Precedent">
+                                    <input type="button" name="edit-next" class="edit-next action-button" value="Suivant">
+                                    {% if mode == "edit" %}
+                                        <span class="bold info"> En cliquant ici vos modifications seront enregistrées (*)</span>
+                                    {%endif %}
+                                    
+                                </fieldset>
+                                <fieldset>
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="canal">Canal de déclaration*</label>
+                                        <select class="form-control" name="canal" id="canal" required="">
+                                            <option vaue="0"></option>
+                                            {% for canal in canals %}
+                                                <option value="{{canal.id}}" {% if alert.canal == arr %} selected {% endif %}>{{canal.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    
+                                    </div>
+                        
+                                    <div class="form-group">
+                                        <label for="tel-informateur">Téléphone de l'informateur : </label>
+                                        <input type="number" name="tel-informateur" id="tel-informateur" class="form-control" value="{{alert.informant_phone}}">
+                                    </div>
+                                    <input type="button" name="edit-previous" class="edit-previous action-button-previous" value="Precedent">
+                                    {% if mode == "view" %}
+
+                                        <input type="button" value="Terminer" class="view-end btn btn-success">
+                                    {% else %}
+                                        <input type="button" value="Sauvegarder" class="edit-next btn btn-success">
+                                        <span class="bold info"> En cliquant ici vos modifications seront enregistrées (*)</span>
+                                    {%endif %}
+                                    
+                                </fieldset>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+{% endblock %}
+
+
+
+{% block js %}
+<script src="{% static 'js/shared.js' %}"></script>
+<script>
+    let current_date = document.getElementById("current_date").value
+    document.getElementById("date_alert").defaultValue = current_date; 
+
+    $(document).ready(function () {
+
+        let mode = $("input[name='mode']").val()
+        if (mode == 'view'){
+            $('.form-control').attr('disabled' , "")
+        }
+        
+        $('.edit-mode').on('click' , function(){
+            window.location = $("#msform").attr('action') +'?mode=edit'
+  
+        })
+        $('.view-mode').on('click' , function(){
+            window.location = $("#msform").attr('action')
+  
+        })
+
+        $('#region').select2({
+            allowClear: true,
+            placeholder: {
+                id: "0",
+                text:"Choisir dans la liste",
+                selected:'selected'
+            },
+        })
+        
+        $('#region').val($("#reg_id").val()).trigger('change')
+
+        $('#department').select2({
+            allowClear: true,
+            placeholder: {
+                id: "0",
+                text:"Choisir dans la liste",
+                selected:'selected'
+            },
+        })
+        $('#arrondissement').select2({
+            allowClear: true,
+            placeholder: {
+                id: "0",
+                text:"Choisir dans la liste",
+                selected:'selected'
+            },
+        })
+
+        $('#canal').select2({
+            allowClear: true,
+            placeholder: {
+                id: "0",
+                text:"Choisir dans la liste",
+                selected:'selected'
+            },
+        })
+        
+        var departments = load_departments($("#reg_id").val())
+        $('#department').select2().empty().select2({
+            data:[{"id":0, "text":"Choisir dans la liste"}].concat(departments.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+        })
+        $('#department').val($("#dep_id").val()).trigger('change')
+
+        var arrs = load_arrs($("#dep_id").val())
+        $('#arrondissement').select2().empty().select2({
+            data: [{"id":0, "text":"Choisir dans la liste"}].concat(arrs.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+        })
+        
+        $('#arrondissement').val($("#arr_id").val()).trigger('change')
+
+        
+        $('#region').on('select2:select', function (e) {
+            var data = e.params.data;
+            var region_id = data.id
+            var departments = load_departments(region_id)
+            
+            $('#department').select2().empty().select2({
+                data:[{"id":0, "text":"Choisir dans la liste"}].concat(departments.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+            }).trigger("change");
+            
+            $(".department").removeAttr("hidden")
+        });
+
+        $('#department').on('select2:select', function (e) {
+            var data = e.params.data;
+            var department_id = data.id
+            var arrs = load_arrs(department_id)
+            $('#arrondissement').select2().empty().select2({
+                data: [{"id":0, "text":"Choisir dans la liste"}].concat(arrs.map((obj)=>{return {"id":obj.id , "text":obj.name}}))
+            }).trigger('change')
+
+            $(".arrondissement").removeAttr("hidden")
+        });
+
+
+        $('#arrondissement').on('select2:select', function (e) {
+            
+            $(".village").removeAttr("hidden")
+        });
+
+
+       $(".view-end").on("click" , function(e){
+
+            window.location = $("#alert-home").val()
+       })
+
+        $('.edit-next').click(function (e) { 
+            e.preventDefault();
+            let mode = $("input[name='mode']").val()
+
+            if (mode == 'view'){
+
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+                console.log(next_fs)
+                next_fs.show(); 
+                $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                current_fs.animate({opacity: 0}, {
+                    step: function(now) {
+                        // for making fielset appear animation
+                        opacity = 1 - now;
+
+                        current_fs.css({
+                            'display': 'none',
+                            'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                    }, 
+                    duration: 600
+                });
+            }
+            else{
+                var step = $("#step").val()
+                current_fs = $(this).parent();
+                next_fs = $(this).parent().next();
+                var donnee = current_fs.serializeArray();
+                donnee.push({name: "step", value : $("#step").val()})
+                if (step == "1"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            $("#step").val(response["next-step"]) 
+                            
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            //show the next fieldset
+                            next_fs.show(); 
+                            //hide the current fieldset with style
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
+                        },
+                        error: function(error){
+                            console.log(error)
+                            
+                        }
+                    });
+                }
+
+                if (step == "2"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            $("#step").val(response["next-step"]) 
+                            
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            //show the next fieldset
+                            next_fs.show(); 
+                            //hide the current fieldset with style
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
+                        },
+                        error: function(error){
+                            console.log(error)
+                            
+                        }
+                    });
+                }
+
+                if (step == "3"){
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                           window.location =  $("#msform").attr("action")
+                        },
+                        error: function(error){
+                            console.log(error)
+                            
+                        }
+                    });
+                }
+            }
+            
+        })
+
+
+
+        $(".edit-previous").click(function(e){
+            e.preventDefault();
+            current_fs = $(this).parent();
+            previous_fs = $(this).parent().prev();
+            //Remove class active
+            $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+            var current_step = Number($("#step").val())
+            $("#step").val(current_step-1)
+            //show the previous fieldset
+            previous_fs.show();
+
+            //hide the current fieldset with style
+            current_fs.animate({opacity: 0}, {
+                step: function(now) {
+                    // for making fielset appear animation
+                    opacity = 1 - now;
+
+                    current_fs.css({
+                        'display': 'none',
+                        'position': 'relative'
+                    });
+                    previous_fs.css({'opacity': opacity});
+                }, 
+                duration: 600
+            });
+            
+        });
+                        
+        
+    })
+    
+</script>
+{% endblock %}

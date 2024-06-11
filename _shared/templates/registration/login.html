@@ -1,0 +1,218 @@
+{% extends "./base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Connexion" %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+
+    <h1 class="mt-4 text-center font-weight-bolder welcome-message">Bienvenue !</h1>
+
+   
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="card  mt-4">
+                <div class="card-body">
+                    <img src="{% static 'images/snoie-logo.jpeg' %}"  alt="SNOIE-Logo" class="" style="height: 200px !important; float : left; padding-right: 20px">
+                    <p style="text-align: justify"> 
+                        Le Système Normalisé d’Observation Indépendante Externe (SNOIE) 
+                        est un regroupement des organisations de la société civile qui mènent les activités 
+                        d’observation indépendante externe suivant un ensemble d’exigences calquées sur la norme qualité 
+                        ISO 9001 : 2015. Ces activités d’observation indépendante externe consistent à collecter et traiter des 
+                        données factuelles sur les activités potentiellement illégales et à les transmettre aux autorités compétentes pour 
+                        d’améliorer l’efficacité des opérations de contrôle et garantir la gestion transparente et durable des ressources du patrimoine national.
+                    </p>
+                </div>
+            </div>
+        </div>
+            
+        <div class="col-12 col-md-6">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <br>
+                        <div class="alert alert-danger alert-dismissible {{ message.tags }}" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                    {%endif%}
+                    {% if message.tags == "success" %}
+                        <br>
+                        <div class="alert alert-success alert-dismissible {{ message.tags }}" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                    {%endif%}
+                    {% if message.tags == "warning" %}
+                        <br>
+                        <div class="alert alert-warning alert-dismissible {{ message.tags }}" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                    {%endif%}
+                    {% if message.tags == "info" %}
+                        <br>
+                        <div class="alert alert-info alert-dismissible {{ message.tags }}" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message }}
+                        </div>
+                    {%endif%}
+                {% endfor %}
+                
+            {% endif %}
+            
+        
+            <div class="card mt-4 login-card">
+                <div class="card-header text-center">
+                    <h3><b>SNOIE Data Management Tools</b></h3>
+                </div>
+
+                <div class="card-body">
+                    {% if request.session.country == "cmr" %}
+                        <div class="login-image">
+                            <img src="{% static 'images/cmr.png' %}" >
+                        </div>
+                    {% elif request.session.country == "congo" %}
+                    
+                        <div class="login-image">
+                            <img src="{% static 'images/congo.png' %}">
+                        </div>
+                    {% elif request.session.country == "ci" %}
+                    
+                        <div class="login-image">
+                            <img src="{% static 'images/ci.png' %}">
+                        </div>
+                    {% endif %}
+                        
+                    <p class="login-box-msg">Connectez-vous pour accéder à votre session</p>
+                    
+                    <form  method="post">{% csrf_token %}
+                        {% for field in form %}
+                            <div class="input-group mb-3">
+                                {% render_field field class="form-control" required="" placeholder=field.label %}
+                                    
+                                {% if field.errors %}
+                                    <small>{{ field.errors|striptags }}</small> 
+                                {% endif %}
+                            </div>
+                                
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success btn-block" name="connecter">Connectez-vous</button>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </form>
+                    <p class="mb-1">
+                        <br>
+                        <a href="<?= base_url($locale.'/mot-de-passe-oublie') ?>">Mot de passe oublié?</a>
+                    </p>
+                    <p class="mb-0">
+                        
+                        <a href="<?= base_url($locale.'/inscription') ?>" class="text-center"> Pas de compte? Inscrivez-vous !</a>
+                    </p>
+                    <p class="mb-1">
+                        
+                        <a href="#" class="text-center" id="change-country"> Changer de pays ?</a>
+                    </p>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="countryChoiceModal" tabindex="-1" role="dialog" aria-labelledby="countryChoiceModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="countryChoiceModalTitle">Connectez vous au portail de votre pays</h4>
+              
+            </div>
+            <div class="modal-body">
+                <div class="country-container mb-5"  id="country-selector">
+                    <div class="country" value="cmr">
+                        <img src="{% static 'images/cmr.png' %}" style="width: 100%; padding-bottom : 10px">
+                        <p>Cameroun</p>
+                    </div>
+                    <div class="country" value="congo">
+                        <img src="{% static 'images/congo.png' %}" style="width: 100%; padding-bottom : 10px">
+                        <p>République du Congo</p>
+                    </div>
+                    <div class="country" value="ci">
+                        <img src="{% static 'images/ci.png' %}" style="width: 100%; padding-bottom : 10px">
+                        <p>Côte d'Ivoire</p>
+                    </div>
+        
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+        
+
+</div>
+
+
+{% endblock %}
+
+
+{% block js %}
+
+    <script>
+        $(".country").on("click" , function(){
+            var value = $(this).attr("value")
+            set_session_country(value)
+        })
+
+        function set_session_country(country){
+
+            $.ajax({
+                type: "POST",
+                url: "/fr/accounts/set-session-country",
+                data: {'country': country , 'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()},
+                dataType: "json",
+                success: function (response) {
+                   window.location = "/fr/accounts/login"
+                }
+            });
+        }
+
+        $("#change-country").on("click" , function(e){
+            e.preventDefault()
+            $('#countryChoiceModal').modal({
+                show: true,
+                backdrop: 'static',
+                keyboard: false,
+                focus:true
+            });
+            
+        })
+    </script>
+
+    {% if request.session.country == null %}
+        <script>
+            $(document).ready(function () {
+                
+                $('#countryChoiceModal').modal({
+                    show: true,
+                    backdrop: 'static',
+                    keyboard: false,
+                    focus:true
+                });
+
+                
+            });
+
+        </script>
+    {% endif %}
+
+    
+
+{% endblock %}
