@@ -20,7 +20,7 @@ def mission_registry(request , page):
 
     user_profile = request.user.userprofile
 
-    missions = Mission.objects.filter()
+    missions = Mission.objects.filter().order_by('id').reverse()
 
     paginator = Paginator(missions , per_page=15 , orphans=5, allow_empty_first_page=True)
 
@@ -52,12 +52,9 @@ def create_mission(request):
            return HttpResponseServerError("Une erreur est survenue lors de l'enregistrement.")
 
         
-
-
-
     mission_count = Mission.objects.all().count() + 1
 
-    fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter(organisation = user.organisation)]
+    fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter(organisation = user.organisation ,  state = "validated_org")]
     mission_name = ""
 
     
@@ -71,6 +68,8 @@ def create_mission(request):
     context = {"mission_name" : mission_name , "fp":fiche_pertinence}
 
     return JsonResponse(context)
+
+
 
 
 def detail_mission(request, id):
