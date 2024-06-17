@@ -60,6 +60,8 @@ def users_list(request, page):
     return render(request , "users/registry.html" , context)
 
 
+
+
 def create_user(request):
 
     if request.method == "POST":

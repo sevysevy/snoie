@@ -15,7 +15,7 @@ def alert_registry(request , page):
     user_profile = request.user.userprofile
 
 
-    alerts = Alert.objects.filter(organisation = user_profile.organisation)
+    alerts = Alert.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
 
     paginator = Paginator(alerts , per_page=15 , orphans=5, allow_empty_first_page=True)
 
@@ -147,7 +147,7 @@ def create_alert(request):
 @login_required
 def view_update_alert(request, id):
     try:
-
+        context = {}
         if request.method == "POST":
             print(request.POST)
             step = request.POST.get("step")
@@ -180,7 +180,6 @@ def view_update_alert(request, id):
                     department_id = request.POST.get('department')
                     arrondissement_id = request.POST.get('arrondissement')
                     village = request.POST.get('village')
-                    id = request.POST.get("alert_id")
 
                    
                     alert = Alert.objects.get(id = id)
@@ -211,7 +210,6 @@ def view_update_alert(request, id):
                 try:
                     canal = request.POST.get('canal')
                     tel_informateur = request.POST.get('tel-informateur')
-                    id = request.POST.get("alert_id")
 
                     alert = Alert.objects.get(id = id)
                     alert_canal = AlertCanal.objects.get(id = canal)
@@ -239,8 +237,14 @@ def view_update_alert(request, id):
             mode = 'view'
 
         alert = Alert.objects.get(id=id)
-        dep_id = alert.department.id
-        arr_id = alert.arrondissement.id
+        dep_id = ""
+        arr_id = ""
+
+        if alert.department:
+            dep_id = alert.department.id
+        
+        if alert.arrondissement:
+            arr_id = alert.arrondissement.id
         step = 1
 
         context = {'regions':regions , 'canals':canals , 'alert':alert , 'mode':mode , 'dep_id': dep_id , 'arr_id':arr_id , "step":step}
@@ -273,6 +277,7 @@ def get_alert_info(request , id):
 
 def delete_alert(request):
     if request.method == 'POST':
+        print(request.POST)
         id = request.POST.get("alert_id")
         alert = Alert.objects.get(id = id)
 

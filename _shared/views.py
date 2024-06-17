@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
+
+from AlertsManagement.models import AlertCanal
 from .models import *
 from django.contrib.auth.decorators import login_required
 
@@ -39,5 +41,16 @@ def get_arr(request):
         arrs = list(Arrondissement.objects.filter(department = department).values())
 
     context = {"arrs" : arrs}
+
+    return JsonResponse(context)
+
+@login_required
+def get_canal(request):
+
+    
+    canals =list(AlertCanal.objects.all().values())
+
+
+    context = {"canals" : canals}
 
     return JsonResponse(context)

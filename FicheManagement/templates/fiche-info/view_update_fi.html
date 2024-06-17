@@ -451,6 +451,24 @@
     </div>
 
 
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            
+            <div class="modal-body">
+                <h4>Voulez vous vraiment supprimer cet élément ?</h4>
+                <span class="error"><h5>Cet action est irreversible</h5></span>
+            </div>
+    
+            <div class="modal-footer">
+                <input type="button" value="Annuler" class="btn btn-white cancel" >
+                <input type="button" value="Supprimer" class="btn btn-danger delete-button" del-endpoint="{% url 'delete-fi' %}" redirect-endpoint="{% url 'fiche-info-registry' 1 %}">
+            </div>
+          </div>
+        </div>
+    </div>
+
+
     {% block js %}
         <script src="{% static 'js/shared.js' %}"></script>
     {% endblock %}

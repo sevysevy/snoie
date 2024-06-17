@@ -48,19 +48,24 @@
                                             <td> {% if mission.organisation %} {{mission.organisation}} {%endif%}</td>
                 
                                             <td>
-                                                <span class="badge
-                                                    {% if mission.statut_mission == "pending" %}
-                                                        bg-warning
-                                                    {% elif mission.statut_mission == "En cours" %}
-                                                        bg-primary
-                                                    {% elif mission.statut_mission == "Terminé" %}
-                                                        bg-success
-                                                    {% elif mission.statut_mission == "Non réalisée" %}
-                                                        bg-warning
+                                                {% if mission.statut_mission == 'pending' %}
+                                                        <span class="badge bg-secondary">
+                                                            En attente
+                                                        </span>
+                                                    {% elif mission.statut_mission == 'running' %}
+                                                        <span class=" badge bg-primary">
+                                                            En cours
+                                                        </span>
+                                                    {% elif mission.statut_mission == 'ended' %}
+                                                        <span class="badge bg-success">
+                                                            Terminé
+                                                        </span>
+
+                                                    {% elif fiche.state == 'canceled' %}
+                                                        <span class="badge bg-danger">
+                                                            Non réalisée
+                                                        </span>
                                                     {% endif %}
-                                                ">
-                                                    {{mission.statut_mission}}
-                                                </span>
                                             </td>
                 
                                             <td>

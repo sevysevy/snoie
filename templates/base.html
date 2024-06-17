@@ -98,20 +98,14 @@
                         with font-awesome or any other icon font library -->
                         <!--Observateur-->
                             {% with path=request.path %}
-                                <li class="nav-item  {% if 'alert' in path %}  menu-is-opening menu-open {% endif %} " >
-                                    <a href="#" class="nav-link alert_denonciation {% if 'alert' in path %} active  {% endif %}">
-                                        Alertes et dénonciation
-                                        <i class="right fas fa-angle-left"></i>
-                                    </a>
-                                    <ul class="nav nav-treeview" {% if 'alert' in path %} style="display: block;"  {% endif %}>
-                                        <li class="nav-item">
-                                        <a href="{% url 'alerts-registry' 1 %}" class="nav-link {% if 'alert' in path %} active {% endif %}">Mes alertes</a>
-                                        </li>
-                                    </ul>
+                                
+                                <li class="nav-item {% if 'alert' in path %}  menu-is-opening menu-open {% endif %}">
+                                    <a href="{% url 'alerts-registry' 1 %}" class="nav-link alert_denonciation {% if 'alert' in path %} active  {% endif %}">Alertes et dénonciation</a>
                                 </li>
+
                                 <li class="nav-item {% if 'fiche' in path %}  menu-is-opening menu-open {% endif %} ">
                                     <a href="#" class="nav-link   {% if 'fiche' in path %} active {% endif %}">
-                                        Mes fiches
+                                        Fiches
                                         <i class="right fas fa-angle-left"></i>
                                     </a>
                                     <ul class="nav nav-treeview" {% if 'fiche' in path %} style="display: block;"  {% endif %}>
@@ -128,40 +122,44 @@
                                     <a href="{% url 'mission-registry' 1 %}" class="nav-link {% if 'mission' in path %} active {% endif %}">Mission</a>
                                 </li>
 
+                            {% if request.user.userprofile.role.name_code in "coordonnator,responsable" %}
+
                                 <li class="nav-item {% if 'communication' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Communication & lobbying</a>
+                                    <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Lobbying</a>
                                 </li>
+                            {% endif %}
             
-                                <li class="nav-item {% if 'stat' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="" class="nav-link {% if 'stat' in path %} active {% endif %}">
+                                <li class="nav-item {% if 'stats' in path %}  menu-is-opening menu-open {% endif %}">
+                                    <a href="" class="nav-link {% if 'stats' in path %} active {% endif %}">
                                         Statistiques
                                         <i class="right fas fa-angle-left"></i>
                                     </a>
                                     
-                                    <ul class="nav nav-treeview" {% if 'stat' in path %} style="display: block;"  {% endif %}>
+                                    <ul class="nav nav-treeview" {% if 'stats' in path %} style="display: block;"  {% endif %}>
                                             <li class="nav-item">
-                                                <a href="" class="nav-link {% if 'stat-fiche' in path %} active {% endif %}">
+                                                <a href="{% url 'stat-fiche' %}" class="nav-link {% if 'stat-fi' in path %} active {% endif %}">
                                                     Fiches
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                                <a href="" class="nav-link {% if 'stat-alerte' in path %} active {% endif %}">
+                                                <a href="{% url 'stat-alert' %}" class="nav-link {% if 'stat-al' in path %} active {% endif %}">
                                                     Alertes/Dénonciations
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                            <a href="" class="nav-link {% if 'stat-mission' in path %} active {% endif %}">
+                                            <a href="{% url 'stat-mission' %}" class="nav-link {% if 'stat-mis' in path %} active {% endif %}">
                                                 Missions</a>
                                             </li>
                                         
                                     </ul>
                                 </li>
 
+
                                 <li class="nav-item {% if 'message' in path %}  menu-is-opening menu-open {% endif %}">
                                     <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Messages</a>
                                 </li>
 
-
+                            
                                 <li class="nav-item {% if 'accounts' in path %}  menu-is-opening menu-open {% endif %}">
                                     <a href="#" class="nav-link {% if 'accounts' in path %} active {% endif %}">
                                         Gestion utilisateurs
@@ -186,9 +184,6 @@
                                     </ul>
                                 </li>
 
-                                <li class="nav-item {% if 'user' in path %}  menu-is-opening menu-open {% endif %}">
-                                    
-                                </li>
 
                                 <li class="nav-item">
                                     <a href="" class="nav-link {% if 'documentation' in path %} active {% endif %}">
@@ -197,14 +192,6 @@
                                     </a>
                                     
                                     <ul class="nav nav-treeview">
-                                        <?php foreach($cats as $key=>$cat):?>
-                                            <li class="nav-item">
-                                            <?php $adr = strtolower(str_replace(' ', '-', $cat['nom_cat'])) ?>
-                                                <a href="<?= base_url('/documentation/'.$adr) ?>" class="nav-link">
-                                                <?= $cat['nom_cat'] ?>
-                                                </a>
-                                            </li>
-                                        <?php endforeach ?>
                                     </ul>
                                 </li>
                             
@@ -212,7 +199,7 @@
                             {% endwith %}
                         <!-- End Observateur -->
 
-                        <!-- Coordination -->
+                        <!-- 
 
                         {% if request.user.userprofile.is_coordonator %}
                             <li class="nav-item">
@@ -222,11 +209,9 @@
                             <li class="nav-item">
                                 <a href="<?= base_url('/fiche-information') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-information')){ echo "active";}else{ false ;}?> ">Fiches d'information</a>
                             </li>
-                            <!--
                                 <li class="nav-item">
                                     <a href="<?= base_url('/fiche-pertinence') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-pertinence')){ echo "active";}else{ false ;}?>">Fiches de pertinence</a>
                                 </li>
-                            -->
                             <li class="nav-item">
                                 <a href="<?= base_url('/mission') ?>" class="nav-link <?php if(strstr(current_url(), 'mission')){ echo "active";}else{ false ;}?>">Mission</a>
                             </li>
@@ -295,9 +280,9 @@
                         {% endif %}
 
                     
-                        <!-- end coordination -->
+                        <-- end coordination 
 
-                    <!-- responsable  organisation -->
+                    <-- responsable  organisation 
                     
                     {% if request.user.userprofile.is_responsible %}
                         <li class="nav-item">
@@ -342,9 +327,9 @@
                         </li>
                     {% endif %}
                         
-                    <!-- end responsable -->
+                    <-- end responsable 
 
-                    <!-- admin -->
+                    <-- admin 
                     {% if request.user.userprofile.is_admin %}
                         <li class="nav-item">
                         <a href="#" class="nav-link <?php if(strstr(current_url(), 'utilisateurs')){ echo "active";}else{ false ;} ?>">
@@ -409,7 +394,7 @@
                             Module Organisations
                         </a>
                     {% endif %}
-                    <!-- end admin -->
+                    <-- end admin 
 
                         <li class="nav-item">
                             <a href="" class="nav-link {% if 'documentation' in path %} active {% endif %}">
@@ -427,9 +412,9 @@
                                     </li>
                                 <?php endforeach ?>
                             </ul>
-                        </li>
+                        </li-->
                     </ul>
-                </nav>
+                </nav> 
                 <!-- /.sidebar-menu -->
                 </div>
                 <!-- /.sidebar -->

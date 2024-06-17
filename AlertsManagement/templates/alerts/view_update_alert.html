@@ -13,23 +13,42 @@
     <section class="content-header row">
         <div class="col-sm-12">
             <h1>Détails de l'alerte</h1>
-            {% if mode == "view" %}
-                <span class="float-right">
-                    <input type="button" value="Modifier l'alerte" class="btn btn-warning edit-mode">
-                    <input type="button" value="Supprimer" class="btn btn-danger delete">
-                </span>
-            {% else %}
-                <span class="float-right">
-                    <input type="button" value="Terminer les Modifications" class="btn btn-primary view-mode">
-                </span>
-            {% endif %}
+            
             
         </div>
     
     </section>
 
+    <hr>
+
     <section class="content">
         <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    {% if mode == "edit" %}
+                        <span class="">
+                            <input type="button" value="Terminer les Modifications" class="btn btn-primary view-mode">
+                        </span>
+                    {% endif %}
+                    
+                    
+                    <div class="dropdown float-right">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        Options
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            
+                            <a class="dropdown-item edit-mode " href="#">Modifier l'alerte</a>
+
+                            <a class="dropdown-item delete " href="#" alert-id="{{alert.id}}">Supprimer</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <hr>
             
             <div class="row">
                 <div class="col-12">
@@ -155,6 +174,24 @@
             </div>
         </div>
     </section>
+
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            
+            <div class="modal-body">
+                <h4>Voulez vous vraiment supprimer cet élément ?</h4>
+                <span class="error"><h5>Cet action est irreversible</h5></span>
+            </div>
+    
+            <div class="modal-footer">
+                <input type="button" value="Annuler" class="btn btn-white cancel" >
+                <input type="button" value="Supprimer" class="btn btn-danger delete-button" del-endpoint="{% url 'delete-alert' %}" redirect-endpoint="{% url 'alerts-registry' 1 %}">
+            </div>
+          </div>
+        </div>
+    </div>
 
     
 
@@ -419,7 +456,49 @@
             });
             
         });
-                        
+           
+        
+        $(".delete").on("click" , function(e){
+        e.preventDefault();
+
+        let id = $(this).attr("alert-id")
+        console.log($(this))
+
+        $("#deleteModal .delete-button").attr("alert-id"  , id)
+
+        $("#deleteModal").modal('show')
+    })
+
+
+        $("#deleteModal .delete-button").on("click" , function(e){
+            e.preventDefault();
+
+            console.log($(this).attr("alert-id"))
+            data = [{name:"alert_id" , value:$(this).attr("alert-id")} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+            $.ajax({
+                type: "POST",
+                url: $(this).attr("del-endpoint"),
+                data: data,
+                dataType: "JSON",
+                success: function (response) { 
+                    window.location = $(this).attr("redirect-endpoint")
+                },
+                error: function(error){
+                    console.log(error)
+                    toastr.options = options
+                    toastr["error"](error.responseText, "SNOIE ERROR")
+                    
+                }
+            });
+            
+        })
+
+        $("#deleteModal .cancel").on("click" , function(e){
+            e.preventDefault();
+
+            $("#deleteModal").modal('hide')
+            
+        })
         
     })
     

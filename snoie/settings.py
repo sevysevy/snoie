@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     '_shared',
     'AlertsManagement',
     'FicheManagement',
-    'mission'
+    'mission',
+    'Statistic'
 ]
 
 MIDDLEWARE = [
@@ -94,15 +95,21 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
+    
+    
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'snoie_db',
         'USER': 'snoie_user',
         'PASSWORD': '!Snoie1234',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
+
+    
 }
+
+
 
 
 # Password validation

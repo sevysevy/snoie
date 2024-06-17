@@ -30,6 +30,7 @@ base_urlpatterns = i18n_patterns(
     path('fiches-management/' , include('FicheManagement.urls')),
     path('shared/' , include('_shared.urls')),
     path('mission/' , include('mission.urls')),
+    path('stats/' , include('Statistic.urls')),
     path('' , index , name='index')
 
 )

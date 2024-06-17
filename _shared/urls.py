@@ -10,5 +10,6 @@ urlpatterns =[
 
     path('get-departments', views.get_departments, name='get-departments'),
     path('get-arr', views.get_arr, name='get-arr'),
+    path('get-canal', views.get_canal, name='get-canal'),
     
 ]

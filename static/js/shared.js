@@ -56,3 +56,25 @@ function load_arrs(department_id){
 
     return arrs
 }
+
+
+function get_alert_canals(){
+    var canals ;
+
+    $.ajax({
+        type: "GET",
+        url: "/shared/get-canal",
+        async: false,
+        success: function (response) {
+            
+            canals = response.canals
+            console.log(response)
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+
+    return canals
+
+}

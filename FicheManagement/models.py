@@ -71,7 +71,7 @@ class FichePertinence(models.Model):
     observation_coor            = models.TextField(default="")
     observation_resp            = models.TextField(default="")
     fiche_information           = models.ForeignKey(FicheInformation , on_delete=models.SET_NULL, null=True)
-    priority                    = models.CharField(max_length=255 , default="")
+    priority                    = models.TextField(default="")
     status                      = models.CharField(max_length=255 , default="")
     encours_activite            = models.BooleanField(default=False)
     arret_activite              = models.BooleanField(default=False)

@@ -287,20 +287,30 @@ color: white;
   text-decoration: underline;
 }
 
+.daterangepicker .calendar {
+    display: block !important;
+}
+
 
 /***
 */
 
 .list_details_mission li {
-    list-style-type: circle;
+    list-style-type: square;
     padding: 10px;
-    font-size: 1.1em;
+    font-size: 1.2em;
     margin-left: 20px;
     color: dodgerblue; 
 }
 
 .list_details_mission li a:hover {
     text-decoration: underline;
+}
+
+.date_ajout_document {
+    color: #000;
+    font-style: italic;
+    font-size: 1.05rem;
 }
 
 
