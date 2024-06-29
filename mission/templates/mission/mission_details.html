@@ -26,9 +26,21 @@
         <div class="row">
             <div class="col-sm-12">
 
-                {% if request.user.user_profile.organisation.organisation_type.name != ""Lobbying"" %}
+                {% if request.user.user_profile.organisation.organisation_type.name != "Lobbying" %}
                     <span class="">
                         <input type="button" value="Ajouter un document" class="btn btn-warning btn-sm add-doc">
+                    </span>
+
+                    <span class="">
+                        <input type="button" value="Démarrer la mission" class="btn btn-success btn-sm start-mission" start-mission-endpoints="">
+                    </span>
+
+                    <span class="">
+                        <input type="button" value="Annuler la mission" class="btn btn-danger btn-sm cancel-mission">
+                    </span>
+
+                    <span class="">
+                        <input type="button" value="Terminer la mission" class="btn btn-primary btn-sm end-mission">
                     </span>
                 {% endif %}
 
@@ -37,7 +49,7 @@
                     Options
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        {% if request.user.user_profile.organisation.organisation_type.name != ""Lobbying"" %}
+                        {% if request.user.user_profile.organisation.organisation_type.name != "Lobbying" %}
                         
                             <a class="dropdown-item add-doc" href="#">Ajouter un document</a>
                         {% endif %}
@@ -82,6 +94,7 @@
                     </div>
         
                     <div class="card-body">
+                        <input type="text" value="{{mission.id}}" name="mission_id"  hidden/>
                         <ul class="list_details_mission">
                             <li>
                                 <a href="{% url 'view-update-fi' mission.fiche_information.id %}" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
@@ -166,7 +179,12 @@
                                             PV d'entretien   
                                         </a>
                                         
-                                        <span class="date_ajout_document">Ajouté le {{mission.date_pv_entretien | date:'d/m/Y'}} </span>
+                                        <span class="date_ajout_document">Ajo
+                                            
+                                            
+                                            
+                                            
+                                            uté le {{mission.date_pv_entretien | date:'d/m/Y'}} </span>
                                         
                                     </li>
 
@@ -370,6 +388,44 @@ $(".add-doc").on("click" , function(e){
     e.preventDefault()
 
     $("#addModal").modal('show')
+})
+
+
+$(".start-mission").on("click" , function(e){
+    e.preventDefault();
+
+    console.log($(this).attr("alert-id"))
+    data = [{name:"mission_id" , value:$('input["name"=mission_id]').val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+    $.ajax({
+        type: "POST",
+        url: $(this).attr("start-mission-endpoint"),
+        data: data,
+        dataType: "JSON",
+        success: function (response) { 
+            window.location = $(this).attr("redirect-endpoint")
+        },
+        error: function(error){
+            console.log(error)
+            toastr.options = options
+            toastr["error"](error.responseText, "SNOIE ERROR")
+            
+        }
+    });
+
+    console.log("start mission")
+})
+
+$(".cancel-mission").on("click" , function(e){
+    e.preventDefault();
+
+    console.log("cancel mission")
+})
+
+
+$(".end-mission").on("click" , function(e){
+    e.preventDefault();
+
+    console.log("end mission")
 })
 
 

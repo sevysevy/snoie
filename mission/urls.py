@@ -11,5 +11,6 @@ urlpatterns =[
     path('detail-mission/<int:id>', views.detail_mission, name='detail-mission'),
     path('download-mission-doc/<int:id>', views.download_mission_doc, name='download-mission-doc'),
     path('add-mission-doc/<int:id>', views.add_mission_doc, name='add-mission-doc'),
+    path('start-mission/<int:id>', views.start_mission, name='start-mission'),
     
 ] 

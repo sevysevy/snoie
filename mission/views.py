@@ -32,6 +32,22 @@ def mission_registry(request , page):
     return render(request , "mission/registry.html" , context)
 
 
+@login_required
+def start_mission(request , id):
+
+    user_profile = request.user.userprofile
+
+    if request.method == 'POST':
+
+        mission = Mission.objects.filter(id = id)
+        mission.statut_mission = "started"
+
+        mission.save()
+        
+    context = {"message": "mision started succefully"}
+    
+    return JsonResponse(context)
+
 
 @login_required
 def create_mission(request):
