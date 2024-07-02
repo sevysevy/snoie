@@ -10,6 +10,7 @@ from . import views
 urlpatterns =[
 
     path('login', views.Login.as_view(redirect_authenticated_user = True) , name='login'),
+    path('register', views.register, name='register-new-user'),
     path('logout', views.Logout.as_view() , name='logout'),
     path('check-email', views.check_email , name='check-email'),
     path('users/<int:page>', views.users_list , name='users-list'),

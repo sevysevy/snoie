@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from AlertsManagement.models import *
 from FicheManagement.models import FicheInformation, FichePertinence
+from mission.models import Mission
 # Create your views here.
 
 
@@ -21,13 +22,9 @@ def statistic_alert_datas(request):
     start = request.GET.get('start',"1970-01-01")
     end = request.GET.get('end', date.today().strftime("%Y-%m-%d"))
 
-    print(start)
-    print(end)
-
-    
     number_alert = Alert.objects.filter(created_at__date__range = (start , end)).count() 
     alerts = Alert.objects.filter(created_at__date__range = (start , end))
-    print(alerts)
+
     canals = AlertCanal.objects.all()
     regions = Region.objects.all().order_by('name')
     alert_by_month = {}
@@ -83,9 +80,9 @@ def statistic_fiche_datas(request):
     start = request.GET.get('start',"1970-01-01")
     end = request.GET.get('end', date.today().strftime("%Y-%m-%d"))
 
-    fiche_info = FicheInformation.objects.filter(created_at__date__range = (start , end))
-    fiche_perti = FichePertinence.objects.filter(created_at__date__range = (start , end))
-
+    fiche_info = FicheInformation.objects.filter(created_at__date__range = (start , end) , state="validated_org")
+    fiche_perti = FichePertinence.objects.filter(created_at__date__range = (start , end) , state="validated_org")
+    
     number_fi = fiche_info.count()
     number_fp = fiche_perti.count()
 
@@ -112,7 +109,7 @@ def statistic_fiche_datas(request):
                 fi_by_month[str(i)] = fi_by_month[str(i)] + 1
 
         for el in fiche_perti:
-            if el.created_at.month == 1:
+            if el.created_at.month == i:
                 fp_by_month[str(i)] = fp_by_month[str(i)] + 1
 
     
@@ -144,7 +141,7 @@ def statistic_fiche_datas(request):
 
 
     context = {"number_fi": number_fi, "number_fp":number_fp, "fi_by_months":fi_by_month, "fp_by_months":fp_by_month,
-               "fi_by_regions":fi_by_region , "fp_by_regions":fp_by_region , "fi_by_orgs":fi_by_org}
+               "fi_by_regions":fi_by_region , "fp_by_regions":fp_by_region , "fi_by_org":fi_by_org , "fp_by_org":fp_by_org}
     
     return JsonResponse(context)
 
@@ -159,3 +156,61 @@ def statistic_mission(request):
     
     return render(request , "statistic/mission.html" , context)
 
+
+@login_required
+def statistic_mission_datas(request):
+    start = request.GET.get('start',"1970-01-01")
+    end = request.GET.get('end', date.today().strftime("%Y-%m-%d"))
+
+    missions = Mission.objects.filter(created_at__date__range = (start , end))
+
+    mission_ended = missions.filter(statut_mission = "ended")
+    mission_started = missions.filter(statut_mission = "running")
+    mission_cancel = missions.filter(statut_mission = "cancelled")
+
+
+    total_mission = missions.count()
+    total_started = mission_started.count()
+    total_ended = mission_ended.count()
+    total_cancel = mission_cancel.count()
+
+
+    org = Organisation.objects.all()
+    regions = Region.objects.all().order_by('name')
+
+
+    mi_by_month = {}
+    mi_by_org = {}
+    mi_by_region = {}
+
+    for i in range(1,13):
+        mi_by_month[str(i)] = 0
+
+        for elm in missions:
+            if elm.created_at.month == i:
+                mi_by_month[str(i)] = mi_by_month[str(i)] + 1
+
+
+    
+
+    for elm in regions:
+        mi_by_region[elm.name] = 0
+
+        for val in missions:
+            if val.fiche_information.region.name_code == elm.name_code:
+                mi_by_region[elm.name] = mi_by_region[elm.name] + 1
+
+
+    for elm in org:
+        mi_by_org[elm.name] = 0
+
+        for val in missions:
+            if val.organisation.name == elm.name:
+                mi_by_org[elm.name] = mi_by_org[elm.name] + 1
+
+
+
+    context = {"total_mi": total_mission, "total_started":total_started , "total_ended":total_ended , "total_cancel":total_cancel, 
+               "mi_by_regions":mi_by_region , "mi_by_org":mi_by_org , "mi_by_month":mi_by_month}
+    
+    return JsonResponse(context)

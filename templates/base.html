@@ -98,91 +98,96 @@
                         with font-awesome or any other icon font library -->
                         <!--Observateur-->
                             {% with path=request.path %}
+
+                                {% if request.user.userprofile.role.name_code in "coordonnator,responsable,observator" %}
                                 
-                                <li class="nav-item {% if 'alert' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="{% url 'alerts-registry' 1 %}" class="nav-link alert_denonciation {% if 'alert' in path %} active  {% endif %}">Alertes et dénonciation</a>
-                                </li>
+                                    <li class="nav-item {% if 'alert' in path %}  menu-is-opening menu-open {% endif %}">
+                                        <a href="{% url 'alerts-registry' 1 %}" class="nav-link alert_denonciation {% if 'alert' in path %} active  {% endif %}">Alertes et dénonciation</a>
+                                    </li>
 
-                                <li class="nav-item {% if 'fiche' in path %}  menu-is-opening menu-open {% endif %} ">
-                                    <a href="#" class="nav-link   {% if 'fiche' in path %} active {% endif %}">
-                                        Fiches
-                                        <i class="right fas fa-angle-left"></i>
-                                    </a>
-                                    <ul class="nav nav-treeview" {% if 'fiche' in path %} style="display: block;"  {% endif %}>
-                                        <li class="nav-item">
-                                            <a href="{% url 'fiche-info-registry' 1 %}" class="nav-link  {% if 'fiche-info' in path %} active {% endif %}">Fiches d'information</a>
+                                    <li class="nav-item {% if 'fiche' in path %}  menu-is-opening menu-open {% endif %} ">
+                                        <a href="#" class="nav-link   {% if 'fiche' in path %} active {% endif %}">
+                                            Fiches
+                                            <i class="right fas fa-angle-left"></i>
+                                        </a>
+                                        <ul class="nav nav-treeview" {% if 'fiche' in path %} style="display: block;"  {% endif %}>
+                                            <li class="nav-item">
+                                                <a href="{% url 'fiche-info-registry' 1 %}" class="nav-link  {% if 'fiche-info' in path %} active {% endif %}">Fiches d'information</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="{% url 'fiche-pertinence-registry' 1 %}" class="nav-link  {% if 'fiche-pertinence' in path %} active {% endif %}">Fiches de pertinence</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                
+                                    <li class="nav-item {% if 'mission' in path %}  menu-is-opening menu-open {% endif %}">
+                                        <a href="{% url 'mission-registry' 1 %}" class="nav-link {% if 'mission' in path %} active {% endif %}">Mission</a>
+                                    </li>
+
+                                    {% if request.user.userprofile.role.name_code in "coordonnator,responsable" %}
+
+                                        <li class="nav-item {% if 'communication' in path %}  menu-is-opening menu-open {% endif %}">
+                                            <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Lobbying</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a href="{% url 'fiche-pertinence-registry' 1 %}" class="nav-link  {% if 'fiche-pertinence' in path %} active {% endif %}">Fiches de pertinence</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            
-                                <li class="nav-item {% if 'mission' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="{% url 'mission-registry' 1 %}" class="nav-link {% if 'mission' in path %} active {% endif %}">Mission</a>
-                                </li>
-
-                            {% if request.user.userprofile.role.name_code in "coordonnator,responsable" %}
-
-                                <li class="nav-item {% if 'communication' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Lobbying</a>
-                                </li>
-                            {% endif %}
+                                    {% endif %}
             
-                                <li class="nav-item {% if 'stats' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="" class="nav-link {% if 'stats' in path %} active {% endif %}">
-                                        Statistiques
-                                        <i class="right fas fa-angle-left"></i>
-                                    </a>
-                                    
-                                    <ul class="nav nav-treeview" {% if 'stats' in path %} style="display: block;"  {% endif %}>
-                                            <li class="nav-item">
-                                                <a href="{% url 'stat-fiche' %}" class="nav-link {% if 'stat-fi' in path %} active {% endif %}">
-                                                    Fiches
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="{% url 'stat-alert' %}" class="nav-link {% if 'stat-al' in path %} active {% endif %}">
-                                                    Alertes/Dénonciations
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                            <a href="{% url 'stat-mission' %}" class="nav-link {% if 'stat-mis' in path %} active {% endif %}">
-                                                Missions</a>
-                                            </li>
+                                    <li class="nav-item {% if 'stats' in path %}  menu-is-opening menu-open {% endif %}">
+                                        <a href="" class="nav-link {% if 'stats' in path %} active {% endif %}">
+                                            Statistiques
+                                            <i class="right fas fa-angle-left"></i>
+                                        </a>
                                         
-                                    </ul>
-                                </li>
+                                        <ul class="nav nav-treeview" {% if 'stats' in path %} style="display: block;"  {% endif %}>
+                                                <li class="nav-item">
+                                                    <a href="{% url 'stat-fiche' %}" class="nav-link {% if 'stat-fi' in path %} active {% endif %}">
+                                                        Fiches
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{% url 'stat-alert' %}" class="nav-link {% if 'stat-al' in path %} active {% endif %}">
+                                                        Alertes/Dénonciations
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                <a href="{% url 'stat-mission' %}" class="nav-link {% if 'stat-mis' in path %} active {% endif %}">
+                                                    Missions</a>
+                                                </li>
+                                            
+                                        </ul>
+                                    </li>
 
+                                    {% if request.user.userprofile.role.name_code in "coordonnator" %}
+                                        <li class="nav-item {% if 'message' in path %}  menu-is-opening menu-open {% endif %}">
+                                            <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Messages</a>
+                                        </li>
 
-                                <li class="nav-item {% if 'message' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Messages</a>
-                                </li>
-
-                            
-                                <li class="nav-item {% if 'accounts' in path %}  menu-is-opening menu-open {% endif %}">
-                                    <a href="#" class="nav-link {% if 'accounts' in path %} active {% endif %}">
-                                        Gestion utilisateurs
-                                        <i class="right fas fa-angle-left"></i>
-                                    </a>
-                                    <ul class="nav nav-treeview" {% if 'accounts' in path %} style="display: block;"  {% endif %}>
-                                        <li class="nav-item">
-                                            <a href="{% url 'users-list' 1 %}" class="nav-link {% if 'user' in path %} active {% endif %}">
-                                                Utilisateurs
+                                
+                                        <li class="nav-item {% if 'accounts' in path %}  menu-is-opening menu-open {% endif %}">
+                                            <a href="#" class="nav-link {% if 'accounts' in path %} active {% endif %}">
+                                                Gestion utilisateurs
+                                                <i class="right fas fa-angle-left"></i>
                                             </a>
+                                            <ul class="nav nav-treeview" {% if 'accounts' in path %} style="display: block;"  {% endif %}>
+                                                <li class="nav-item">
+                                                    <a href="{% url 'users-list' 1 %}" class="nav-link {% if 'user' in path %} active {% endif %}">
+                                                        Utilisateurs
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{% url 'organisations-list' 1 %}" class="nav-link {% if 'organisation' in path %} active {% endif %}">
+                                                        Organisations
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="{% url 'roles-list' 1 %}" class="nav-link {% if 'role' in path %} active {% endif %}">
+                                                        Role
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </li>
-                                        <li class="nav-item">
-                                            <a href="{% url 'organisations-list' 1 %}" class="nav-link {% if 'organisation' in path %} active {% endif %}">
-                                                Organisations
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{% url 'roles-list' 1 %}" class="nav-link {% if 'role' in path %} active {% endif %}">
-                                                Role
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
+                                    {% endif %}
+                                
+                                {% endif %}
 
 
                                 <li class="nav-item">

@@ -30,7 +30,7 @@
                     <span class="">
                         <input type="button" value="Ajouter un document" class="btn btn-warning btn-sm add-doc">
                     </span>
-
+                    
                     <span class="">
                         <input type="button" value="Démarrer la mission" class="btn btn-success btn-sm start-mission" start-mission-endpoints="">
                     </span>
@@ -340,18 +340,57 @@
                         <label for="fp" id="fp-label">Sélectionnez le type de document</label>
 
                         <select name="doc-type" id="doc-type" class="form-control" required="">
-                            <option value="tdr-amender">TDR Amendé</option>
-                            <option value="tdr-valid">TDR Validé</option>
-                            <option value="ordre-mission">Ordre de Mission</option>
-                            <option value="pv-entretien">PV d'Entretien </option>
-                            <option value="compte-rd-entretien">Compte Rendu d'Entretien</option>
-                            <option value="fiche-observation">Fiche d'Observation</option>
-                            <option value="check-list-conform">Check List Conformite</option>
-                            <option value="rapport-mission">Rapport de Mission</option>
-                            <option value="rapport-mission-commente">Rapport de Mission commenté</option>
-                            <option value="rapport-mission-amender-1">Rapport de Mission Amendé 1</option>
-                            <option value="rapport-mission-amender-2">Rapport de Mission Amendé 2</option>
-                            <option value="rapport-mission-approuver">Rapport de Mission Approuvé</option>
+                            {% if not mission.tdr_amender.name %}
+                                <option value="tdr-amender">TDR Amendé</option>
+                            {% endif %}
+
+                            {% if not mission.tdr_valid.name %}
+                                <option value="tdr-valid">TDR Validé</option>
+                            {% endif %}
+
+                            {% if not mission.order_mission.name %}
+                                <option value="ordre-mission">Ordre de Mission</option>
+                            {% endif %}
+
+                            {% if mission.statut_mission == "running" %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="pv-entretien">PV d'Entretien </option>
+                                {% endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="compte-rd-entretien">Compte Rendu d'Entretien</option>
+                                {% endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="fiche-observation">Fiche d'Observation</option>
+                                {%endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="check-list-conform">Check List Conformite</option>
+                                {% endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="rapport-mission">Rapport de Mission</option>
+                                {% endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="rapport-mission-commente">Rapport de Mission commenté</option>
+                                {% endif %}
+                                
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="rapport-mission-amender-1">Rapport de Mission Amendé 1</option>
+                                {% endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="rapport-mission-amender-2">Rapport de Mission Amendé 2</option>
+                                {% endif %}
+
+                                {% if not mission.tdr_amender.name %}
+                                    <option value="rapport-mission-approuver">Rapport de Mission Approuvé</option>
+                                {% endif %}
+
+                            {% endif %}
                             
                                 
                         </select>

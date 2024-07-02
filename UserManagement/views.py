@@ -38,6 +38,13 @@ class Logout(LogoutView):
         return reverse_lazy('index') 
     
 
+def register(request):
+
+    context = {}
+
+    return render(request , "registration/register.html" , context)
+    
+
     
     
 

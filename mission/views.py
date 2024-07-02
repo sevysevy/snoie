@@ -40,7 +40,7 @@ def start_mission(request , id):
     if request.method == 'POST':
 
         mission = Mission.objects.filter(id = id)
-        mission.statut_mission = "started"
+        mission.statut_mission = "running"
 
         mission.save()
         

@@ -78,7 +78,10 @@ class Mission(models.Model):
     motif_annulation                = models.TextField(default="")
     statut_commentaire              = models.TextField(default="")
     statut_mission                  = models.CharField(max_length=255, default="")
-
+    
+    date_mission_start              = models.DateTimeField(null=True)
+    date_mission_end                = models.DateTimeField(null=True)
+    date_mission_cancel             = models.DateTimeField(null=True)
     
     created_at                  =  models.DateTimeField(auto_now_add=True)
     updated_at                  =  models.DateTimeField(auto_now=True)
