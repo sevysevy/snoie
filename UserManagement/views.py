@@ -40,7 +40,39 @@ class Logout(LogoutView):
 
 def register(request):
 
-    context = {}
+    if request.method ==  "POST":
+        
+        lastName = request.POST.get('last-name')
+        firstName = request.POST.get('first-name')
+        phone = request.POST.get('tel')
+        org_id = request.POST.get('org')
+        email  = request.POST.get('email')
+        password = request.POST.get('password')
+
+        organisation = ""
+
+        try:
+            organisation = Organisation.objects.get(id = org_id)
+            role = Role.objects.filter(name_code = "abonne")
+
+            user = User(email = email , first_name=firstName , last_name=lastName , username = email )
+            user.set_password(password) 
+            user.save()
+
+            userProfile = UserProfile(user = user , firstName = firstName , lastName = lastName , fullName = firstName + " " + lastName , email = email , phone = phone , organisation = organisation , role = role.first()  )
+
+            userProfile.save()
+            context = {"id":userProfile.id}
+
+            return JsonResponse(context)
+        except Exception as e :
+            raise Exception(e)
+        
+        
+
+    orgs = Organisation.objects.all()
+
+    context = {'orgs':orgs}
 
     return render(request , "registration/register.html" , context)
     

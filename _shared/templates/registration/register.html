@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block title %} 
-    SNOIE | {% translate "Connexion" %}
+    SNOIE | {% translate "Enregistrement" %}
 {% endblock %}
 
 
@@ -89,60 +89,73 @@
                         </div>
                     {% endif %}
                         
-                    <p class="login-box-msg">Inscrivez-vous pour accéder à la plateforme</p>
+                    <p class="login-box-msg">Enregistrez-vous pour accéder à la plateforme</p>
                     
-                    <form  method="post">{% csrf_token %}
-                        <div class="form-group mb-3">
-                            <label> Nom(s) *</label>
-                            <input type="text" class="form-control" placeholder="Noms" name="last-name"  required>
-                            <span class="text-danger">  </span>
-                        </div>
+                    <form  method="post" novalidate action="{% url 'register-new-user' %}">
+                        <input type="hidden" value="{% url 'login' %}" name="login-url"/>
+                        <fieldset>
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label> Nom(s) *</label>
+                                <input type="text" class="form-control" placeholder="Noms" name="last-name"  required>
+                                <span class="name error" style="display: none;"> Ce champ es obligatoire </span>
+                            </div>
 
-                        <div class="form-group mb-3">
-                            <label> Prénom(s) *</label>
-                            <input type="text" class="form-control" placeholder="Prenoms" name="first-name"  required>
-                            <span class="text-danger"></span>
-                        </div>
+                            <div class="form-group mb-3">
+                                <label> Prénom(s)</label>
+                                <input type="text" class="form-control" placeholder="Prenoms" name="first-name"  required>
+                                <span class="text-danger"></span>
+                            </div>
 
-                        <div class="form-group mb-3">
-                            <label>Email*</label>
-                            <input type="email" class="form-control" placeholder="toi@mail.com" name="email">
+                            <div class="form-group mb-3">
+                                <label>Email*</label>
+                                <input type="email" class="form-control" placeholder="toi@mail.com" name="email">
+                                <span class="email error" style="display: none;"> Entrer une adresse email valide </span>
+                                <span class="email-exist error" style="display: none;"> Cette adresse est deja en cours d'utilisation. </span>
+                            </div>
+        
+
+                            <div class="form-group mb-3">
+                                <label>Genre </label>
+                            
+                                    <input type="radio" class="" value="F" name="genre" > Femme
+                                    <input type="radio" class="" value="H" name="genre" >  Homme
+                                    <span class="genre error" style="display: none;"> Ce champ es obligatoire </span>
+                            </div>
+        
+                            <div class="form-group mb-3">
+                                <label>Telephone*</label>
+                                <input type="text" class="form-control" placeholder="+2376XXXXXXXX" name="tel" id="phone" required>
+                                <span class="tel error" style="display: none;"> Ce champ es obligatoire </span>
+                            
+                            </div>
+                            <div class="form-group">
+                                <label>Organisation*</label>
+                                <select class="form-control select2" style="width: 100%;" name="org">
+                                    <option value=0></option>
+                                    {% for org in orgs %}
+                                        <option value="{{org.id}}">{{org.name}} </option>
+                                    {% endfor %}
+                                    
+                                </select>
+                                <span class="org error" style="display: none;"> Ce champ es obligatoire </span>
+                            </div>
                             <span class="text-danger"></span>
-                        </div>
-    
-                        <div class="form-group mb-3">
-                            <label>Genre </label>
-                           
-                                <input type="radio" class="" value="F" name="genre" > Femme
-                                <input type="radio" class="" value="H" name="genre" >  Homme
+                            <div class="form-group mb-3">
+                                <label>Mot de passe*</label>
+                                <input type="password" class="form-control" placeholder="Mot de passe" name="password"  required>
+                                <span class="password error" style="display: none;"> Les mots de passe doivent etre identiques et contenir aumoins 06 caracteres </span>
+                            </div>
                             <span class="text-danger"></span>
-                        </div>
-    
-                        <div class="form-group mb-3">
-                            <label>Telephone</label>
-                            <input type="text" class="form-control" placeholder="+2376XXXXXXXX" name="tel" id="phone" required>
-                            <span class="text-danger"></span>
-                           
-                        </div>
-                        <div class="form-group">
-                            <label>Organisation*</label>
-                            <select class="form-control select2" style="width: 100%;" name="org">
-                                
-                                    <option value=""></option>
-                                
-                            </select>
-                        </div>
-                        <span class="text-danger"></span>
-                        <div class="form-group mb-3">
-                            <label>Mot de passe*</label>
-                            <input type="password" class="form-control" placeholder="Mot de passe" name="mdp"  required>
-                            <span class="passCheck"></span>
-                        </div>
-                        <span class="text-danger"></span>
-                        <div class="form-group mb-3">
-                            <label>Entrez le mot de passe </label>
-                            <input type="password" class="form-control" placeholder="Confirmer votre mot de passe" name="mdp_conf" required>
-                        </div>
+                            <div class="form-group mb-3">
+                                <label>Entrez le mot de passe </label>
+                                <input type="password" class="form-control" placeholder="Confirmer votre mot de passe" name="password2" required>
+                                <span class="password error" style="display: none;"> Les mots de passe doivent etre identiques et contenir aumoins 06 caracteres </span>
+                            </div>
+
+
+                        </fieldset>
+                        
                 
                         <span class="text-danger"></span>
                         <div class="form-group form-check mb-3">
@@ -152,7 +165,7 @@
                         
                         <div class="row">
                             <div class="col-12">
-                                <button type="submit" class="btn btn-success btn-block" name="connecter">Inscription</button>
+                                <button type="submit" class="btn btn-success btn-block" id="btn-register">Inscription</button>
                             </div>
                         </div>
                     </form>
@@ -213,34 +226,121 @@
 {% block js %}
 
     <script>
-        $(".country").on("click" , function(){
-            var value = $(this).attr("value")
-            set_session_country(value)
-        })
+        $("#btn-register").on("click" , function(e){
+            e.preventDefault()
+            validate_user()
 
-        function set_session_country(country){
+            var current_fs = $("form fieldset")
+            var donnee = current_fs.serializeArray()
+
+            console.log(current_fs)
 
             $.ajax({
                 type: "POST",
-                url: "/fr/accounts/set-session-country",
-                data: {'country': country , 'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()},
-                dataType: "json",
-                success: function (response) {
-                   window.location = "/fr/accounts/login"
+                url: $("form").attr("action"),
+                data: donnee,
+                dataType: "JSON",
+                success: function (response) { 
+                    window.location = $("input[name='login-url']").val()
+                },
+                error: function(error){
+                    console.log(error)
+                    
+                    
                 }
             });
-        }
-
-        $("#change-country").on("click" , function(e){
-            e.preventDefault()
-            $('#countryChoiceModal').modal({
-                show: true,
-                backdrop: 'static',
-                keyboard: false,
-                focus:true
-            });
-            
         })
+
+        $("input").on("focus" , function(){
+            $('form span').hide()
+            $("input[name='last-name']").removeClass('error')
+            $('select[name="org"]').removeClass('error')
+            $("select[name='genre']").removeClass('error')
+            $("input[name='email']").removeClass('error')
+            $("input[name='tel']").removeClass('error')
+            $("input[name='password']").removeClass('error')
+            $("input[name='password2']").removeClass('error')
+        })
+
+        function validate_user(){
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let email = $('input[name="email"]').val()
+            let password1 = $('input[name="password"]').val()
+            let password2 = $('input[name="password2"]').val()
+            let organisation = $('select[name="org"]').val()
+            let LastName = $('input[name="last-name"]').val()
+            let genre = $('input[name="genre"]:checked').val()
+            let tel = $('input[name="tel"]').val()
+
+
+            if(LastName.length < 2){
+                $("input[name='last-name']").addClass('error')
+                $(".name").show()
+                return false
+            }
+
+            
+
+            if (!emailRegex.test(email) ){
+                $("input[name='email']").addClass('error')
+                $(".email").show()
+                return false
+            }
+
+            $.ajax({
+                async: false,
+                type: "GET",
+                url: "/accounts/check-email?email=" + email,
+                async: false,
+                success: function (response) {
+                    exist = response.exist
+                    if(exist == true){
+                        $("input[name='email']").addClass('error')
+                        $(".email-exist").show()
+                        return false
+                    }
+                    console.log(response)
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+            if(genre== undefined){
+                $("select[name='genre']").addClass('error')
+                $(".genre").show()
+                return false
+            }
+
+
+            if(tel.length < 2){
+                $("input[name='tel']").addClass('error')
+                $(".tel").show()
+                return false
+            }
+
+
+            if(organisation == 0){
+                $('select[name="org"]').addClass('error')
+                $(".org").show()
+                return false
+            }
+
+            
+            
+            
+
+
+            if(password1 != password2 || password1.length < 6){
+                $(".password").show()
+                $("input[name='password']").addClass('error')
+                $("input[name='password2']").addClass('error')
+                return false
+            }
+
+            
+            return true
+        }
     </script>
 
     {% if request.session.country == null %}

@@ -234,7 +234,8 @@ select.list-dt:focus {
 
 .error {
     color: #ea1111;
-}
+    border-color: #ea1111;
+  }
 
 input.error {
     border-color: #ea1111;
