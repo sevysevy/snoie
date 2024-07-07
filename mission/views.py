@@ -71,7 +71,7 @@ def create_mission(request):
         
     mission_count = Mission.objects.all().count() + 1
 
-    fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter(organisation = user.organisation ,  state = "validated_org" , mission = None)]
+    fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter(organisation = user.organisation ,  state = "validated_coord" , mission = None)]
     mission_name = ""
 
     
