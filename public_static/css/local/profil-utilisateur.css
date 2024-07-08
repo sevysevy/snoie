@@ -1,0 +1,12 @@
+.organisation{
+    padding-left: 50px;
+}
+
+
+.organisation li {
+    list-style-type: circle;
+    padding: 10px;
+    font-size: 1.1em;
+    margin-left: 20px;
+    color: dodgerblue; 
+}

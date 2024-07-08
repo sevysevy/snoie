@@ -1,0 +1,417 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+/*Background color*/
+#grad1 {
+    background-color:  #9C27B0;
+    background-image: linear-gradient(120deg, #FF4081, #81D4FA);
+}
+
+/*form styles*/
+#msform {
+    position: relative;
+    margin-top: 20px;
+}
+
+
+
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+    display: none;
+}
+
+
+
+
+/*Blue Buttons*/
+#msform .action-button {
+    width: 100px;
+    background: #28a745;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 0px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+#msform .action-button:hover, #msform .action-button:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
+}
+
+/*Previous Buttons*/
+#msform .action-button-previous {
+    width: 100px;
+    background: #616161;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 0px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+#msform .action-button-previous:hover, #msform .action-button-previous:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #616161;
+}
+
+/*Dropdown List Exp Date*/
+select.list-dt {
+    border: none;
+    outline: 0;
+    border-bottom: 1px solid #ccc;
+    padding: 2px 5px 3px 5px;
+    margin: 2px;
+}
+
+select.list-dt:focus {
+    border-bottom: 2px solid skyblue;
+}
+
+/*The background card*/
+.card {
+    z-index: 0;
+    border: none;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+
+.login-card {
+    min-height: 350px;
+}
+/*FieldSet headings*/
+.fs-title {
+    font-size: 25px;
+    color: #2C3E50;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+/*progressbar*/
+#progressbar, #progressbar_details {
+    margin-bottom: 30px;
+    overflow: hidden;
+    color: lightgrey;
+}
+
+#progressbar .active, #progressbar_details .active {
+    color: #000000;
+    font-family: FontAwesome !important;
+   font-size: 1.2em;
+}
+
+#progressbar li , #progressbar_details li{
+    list-style-type: none;
+    font-size: 12px;
+    width: 25%;
+    float: left;
+    position: relative;
+}
+
+/*Icons in the ProgressBar*/
+#progressbar #account:before, #progressbar_details #account:before {
+   
+    content: "1" !important;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+#progressbar li, #progressbar_details li  {
+    text-align: center;
+    font-size: 0.9em
+}
+
+#progressbar #personal:before, #progressbar_details #personal:before {
+ 
+    content: "2" !important;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+#progressbar #payment:before, #progressbar_details #payment:before {
+    content: "3";
+    text-align: center;
+    font-size: 1.1em;
+}
+
+#progressbar #confirm:before, #progressbar_details #confirm:before {
+    content: "4";
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/*ProgressBar before any progress*/
+#progressbar li:before, #progressbar_details li:before {
+    width: 50px;
+    height: 50px;
+    line-height: 45px;
+    display: block;
+    font-size: 18px;
+    color: #ffffff;
+    background: lightgray;
+    border-radius: 50%;
+    margin: 0 auto 10px auto;
+    padding: 2px;
+}
+
+/*ProgressBar connectors*/
+#progressbar li:after , #progressbar_details li:after{
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: lightgray;
+    position: absolute;
+    left: 0;
+    top: 25px;
+    z-index: -1;
+}
+
+/*Color number of the step and the connector before it*/
+#progressbar li.active:before, #progressbar li.active:after, #progressbar_details li.active:before, #progressbar_details li.active:after {
+    background: #28a745;
+}
+
+/*Imaged Radio Buttons*/
+.radio-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.radio {
+    display:inline-block;
+    width: 204;
+    height: 104;
+    border-radius: 0;
+    background: #28a745;
+    box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    cursor:pointer;
+    margin: 8px 2px; 
+}
+
+.radio:hover {
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.radio.selected {
+    box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+/*Fit image in bootstrap div*/
+.fit-image{
+    width: 100%;
+    
+    object-fit: cover;
+}
+
+
+/*** 
+    Design pour le logo 
+***/
+
+.logo_sidebar{
+    height: 120px !important;
+    width: 55%;
+    object-fit: fill;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.border-left-separator{
+    border-left: 1px solid #bcb7b7;
+    margin: 5px auto;
+}
+
+.error {
+    color: #ea1111;
+    border-color: #ea1111;
+  }
+
+input.error {
+    border-color: #ea1111;
+}
+
+.badge {
+    padding: 8px;
+    font-size: 13px;
+}
+
+.card-success:not(.card-outline) > .card-header{
+    color: #1a1919 !important;
+}
+
+.card-header {
+    background-color: transparent !important;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.dropdown-item.delete:hover {
+background-color: red;
+color: white;
+}
+
+.container_logo{
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar_username{
+    color: whitesmoke;
+    padding: 10px;
+    font-size: 1.1em; 
+}
+
+.sidebar_username i {
+    padding: 10px !important;
+    font-size: 1.3em !important;
+}
+
+.user_statut
+{
+  color: beige;
+  font-size: 0.9em;
+  margin-left: 7vh;
+  text-decoration: underline;
+}
+
+.daterangepicker .calendar {
+    display: block !important;
+}
+
+
+/***
+*/
+
+.list_details_mission li {
+    list-style-type: square;
+    padding: 10px;
+    font-size: 1.2em;
+    margin-left: 20px;
+    color: dodgerblue; 
+}
+
+.list_details_mission li a:hover {
+    text-decoration: underline;
+}
+
+.date_ajout_document {
+    color: #000;
+    font-style: italic;
+    font-size: 1.05rem;
+}
+
+
+.modalPays{
+   position: fixed;
+    top: 80%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    text-align: center;
+}
+
+.alert-warning {
+    
+    background-color: whitesmoke !important ; 
+    
+}
+
+pre {
+    display: none;
+}
+
+
+.wrapper, body, html {
+    min-height: 100%;
+}
+
+
+.content-wrapper {
+    height: unset;
+}
+
+.align-center {
+    display: flex;
+    justify-content: center;
+}
+
+.welcome-message {
+    color: #28a745;
+    font-style: italic;
+}
+
+.welcome-message, .logo , .content-details , .country-select-action, .card {
+  
+    animation: fadeIn; 
+    animation-duration: 3s; 
+}
+  
+
+.btn-snoie:hover {
+    border: 3px solid #28a745;
+    background: transparent;
+    color: #28a745;
+}
+
+.btn-snoie {
+    background-color: #28a745;
+    color: #fff;
+    font-weight: 700;
+    padding: 18px;
+    text-decoration: underline;
+    font-size: 18px;
+}
+
+.rem12{
+    font-size: 1.2rem;
+}
+
+.country-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.country {
+    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.country:hover {
+    box-shadow: 0 0 5px 5px #d2dddf;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.login-box-msg {
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.app-name{
+    padding: 20px;
+}
+
+.info {
+    padding: 20px 0;
+    border-bottom: 2px solid #21f00f;
+  }
+
+  .action-button-next {
+    background: #004288 !important;
+  }
