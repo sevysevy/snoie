@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+c!17+0rt_a*lq1)j9f_m4v#2+&qvjdza=y=+ih46+p%d&tg@u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 SITE_ID = 1
 # Application definition
@@ -70,7 +70,7 @@ ROOT_URLCONF = 'snoie.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
