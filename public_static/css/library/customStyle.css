@@ -1,0 +1,43 @@
+.navbar-green {
+  background-color: #28a745;
+}
+
+nav-link > ion-icon {
+  color: yellow;
+}
+
+.deconnexion > ion-icon {
+  color: red;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.description > p {
+  display: block;
+  margin-top: 150px;
+  color: white;
+}
+
+.description {
+  background-color: #28a745;
+}
+
+.nav-link .fa-phone, .nav-link .fa-envelope {
+  margin: 0.5rem;
+}
+
+.contact-us {
+  border-radius: 15px;
+  border: 2px solid white;
+  transition: 0.4s;
+  float: right;
+}
+
+.contact-us:hover {
+  background-color: white;
+  color: black;
+}
+
+/*# sourceMappingURL=customStyle.css.map */

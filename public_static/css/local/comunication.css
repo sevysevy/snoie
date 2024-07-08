@@ -1,0 +1,55 @@
+.nav-tabs .nav-link.active{
+    color: white;
+    font-weight: 600; 
+    background-color: green;
+}
+
+
+.nav-tabs  a{
+    color:gray ;
+    
+}
+
+.tab-pane .title-section{
+   font-size: 1.3em; 
+}
+
+.tab-pane .title-section i {
+    padding-right: 10px; ;
+}
+
+.btn-link {
+    
+    color: green;
+    font-weight: 500;
+    font-size: 20px;
+   
+}
+
+
+.documents-mission .alert-warning, .activites-mission .alert-warning{
+    background-color: #fff3cd !important ;
+}
+
+
+
+/*** CSS sur les stats (flemme de créer un fichier) **/
+.stats-alert .title{
+    text-align: left;
+    font-weight: bold;
+    
+}
+
+.stats-alert .num {
+    font-size: 3em;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode',;
+    text-align: center;
+}
+
+.card .top{
+    height: 10px;
+    background-color: cadetblue;
+    width: 100%;
+    border-radius: 2px;
+
+}
