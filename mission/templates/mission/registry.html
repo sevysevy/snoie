@@ -61,7 +61,7 @@
                                                             Terminé
                                                         </span>
 
-                                                    {% elif fiche.statut_mission == 'cancelled' %}
+                                                    {% elif mission.statut_mission == 'canceled' %}
                                                         <span class="badge bg-danger">
                                                             Non réalisée
                                                         </span>
@@ -75,9 +75,9 @@
                                                             <td>
                                                                 <a href="{% url 'detail-mission' mission.id %}" class="table-button view" alert-id="{{mission.id}}" info-url="" ><i class="fas fa-eye"></i></a>
                                                             </td>
-                                                            <td>
+                                                            <!--td>
                                                                 <a href="#" class="table-button edit"  data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i></a>
-                                                            </td>
+                                                            </td-->
                                                         </tr>
                                                     </tbody>
                                                 </table>

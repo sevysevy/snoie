@@ -26,39 +26,69 @@
         <div class="row">
             <div class="col-sm-12">
 
-                {% if request.user.user_profile.organisation.organisation_type.name != "Lobbying" %}
-                    <span class="">
-                        <input type="button" value="Ajouter un document" class="btn btn-warning btn-sm add-doc">
-                    </span>
-                    
-                    <span class="">
-                        <input type="button" value="Démarrer la mission" class="btn btn-success btn-sm start-mission" start-mission-endpoints="">
-                    </span>
+                {% if request.user.user_profile.organisation.organisation_type.name != "Lobbying"  and mission.statut_mission  != 'canceled' %}
+                    {% if mission.statut_mission != 'ended' %}
+                        <span class="">
+                            <input type="button" value="Ajouter un document" class="btn btn-warning btn-sm add-doc">
+                        </span>
+                    {% endif %}
 
-                    <span class="">
-                        <input type="button" value="Annuler la mission" class="btn btn-danger btn-sm cancel-mission">
-                    </span>
+                    {% if mission.statut_mission not in  'running,ended' %}
+                        <span class="">
+                            <input type="button" value="Démarrer la mission" class="btn btn-success btn-sm start-mission" start-mission-endpoint="{% url 'start-mission' mission.id%}">
+                        </span>
+                    {% endif %}
 
-                    <span class="">
-                        <input type="button" value="Terminer la mission" class="btn btn-primary btn-sm end-mission">
-                    </span>
+                    {% if mission.statut_mission in 'running,pending' %}
+
+                        <span class="">
+                            <input type="button" value="Annuler la mission" class="btn btn-danger btn-sm cancel-mission">
+                        </span>
+                    {% endif %}
+
+                    {% if mission.statut_mission == 'running' %}
+                        <span class="">
+                            <input type="button" value="Terminer la mission" class="btn btn-primary btn-sm end-mission" end-mission-endpoint="{% url 'end-mission' mission.id%}">
+                        </span>
+                    {% endif %}
                 {% endif %}
 
-                <div class="dropdown float-right">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                    Options
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        {% if request.user.user_profile.organisation.organisation_type.name != "Lobbying" %}
+                {% if mission.statut_mission  != 'canceled'%}
+                    <div class="dropdown float-right">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                            Options
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            
+                            {% if request.user.user_profile.organisation.organisation_type.name != "Lobbying" %}
+                            
+                                {% if mission.statut_mission != 'ended' %}
+                                    <a class="dropdown-item add-doc" href="#">Ajouter un document</a>
+                                {% endif %}
+                                
+                                {% if mission.statut_mission not in  'running,ended' %}
+                                    <a class="dropdown-item start-mission" href="#" start-mission-endpoint="{% url 'start-mission' mission.id%}">Démarrer la mission</a>
+                                {% endif %}
+
+                                {% if mission.statut_mission in 'running,pending' %}
+                                    <a class="dropdown-item cancel-mission" href="#" >Annuler la mission</a>
+                                {% endif %}
+
+                                {% if mission.statut_mission == 'running' %}
+                                    <a class="dropdown-item end-mission" href="#" end-mission-endpoint="{% url 'end-mission' mission.id%}">Terminer la mission</a>
+                                {% endif %}
+                            {% endif %}
+
+                            <a class="dropdown-item {% if mission.statut_mission == "pending" %} edit-mode {% else %} disabled {% endif %}" href="#">Modifier la mission</a>
+
+
+                            <a class="dropdown-item {% if mission.statut_mission == "pending" %} delete {% else %} disabled {% endif %}" href="#">Supprimer</a>
+
                         
-                            <a class="dropdown-item add-doc" href="#">Ajouter un document</a>
-                        {% endif %}
-
-                        <a class="dropdown-item {% if mission.statut_mission == "pending" %} edit-mode {% else %} disabled {% endif %}" href="#">Modifier la mission</a>
-
-                        <a class="dropdown-item {% if mission.statut_mission == "pending" %} delete {% else %} disabled {% endif %}" href="#">Supprimer</a>
+                            
+                        </div>
                     </div>
-                </div>
+                {% endif %}
 
             </div>
         </div>
@@ -86,7 +116,7 @@
                                     Terminé
                                 </span>
 
-                            {% elif fiche.state == 'canceled' %}
+                            {% elif mission.statut_mission == 'canceled' %}
                                 <span class="float-right badge bg-danger">
                                     Non réalisée
                                 </span>
@@ -300,16 +330,16 @@
 
                         </ul>
 
-                        {% if mission.statut_mission == "cancelled" %}
+                        {% if mission.statut_mission == "canceled" %}
                             <br><br>
-                            <h4> Mission annulée par :  </h4>
+                            <h4> Mission annulée par : {{mission.user_cancel_mission.fullName}} </h4>
                             <br>
                             <h5>Motif de la non réalisation de la mission : </h4>
-                            <textarea class="form-control" readonly = "readonly" > </textarea>
+                            <textarea class="form-control" readonly = "readonly" > {{mission.motif_annulation}} </textarea>
                             <br><br>
 
                             <h4>Commentaires sur la non réalisation de la mission : </h4>
-                            <textarea class="form-control" readonly = "readonly" > </textarea>
+                            <textarea class="form-control" readonly = "readonly" > {{mission.comment_cancel}} </textarea>
                         {% endif %}
 
                     </div>
@@ -323,99 +353,124 @@
 
 
 
-<div class="modal fade" id="addModal" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Ajouter un document </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{% url 'add-mission-doc' mission.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
-                    
-                  
-                    <div class="form-group" id="select-fp">
-                        <label for="fp" id="fp-label">Sélectionnez le type de document</label>
-
-                        <select name="doc-type" id="doc-type" class="form-control" required="">
-                            {% if not mission.tdr_amender.name %}
-                                <option value="tdr-amender">TDR Amendé</option>
-                            {% endif %}
-
-                            {% if not mission.tdr_valid.name %}
-                                <option value="tdr-valid">TDR Validé</option>
-                            {% endif %}
-
-                            {% if not mission.order_mission.name %}
-                                <option value="ordre-mission">Ordre de Mission</option>
-                            {% endif %}
-
-                            {% if mission.statut_mission == "running" %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="pv-entretien">PV d'Entretien </option>
-                                {% endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="compte-rd-entretien">Compte Rendu d'Entretien</option>
-                                {% endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="fiche-observation">Fiche d'Observation</option>
-                                {%endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="check-list-conform">Check List Conformite</option>
-                                {% endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="rapport-mission">Rapport de Mission</option>
-                                {% endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="rapport-mission-commente">Rapport de Mission commenté</option>
-                                {% endif %}
-                                
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="rapport-mission-amender-1">Rapport de Mission Amendé 1</option>
-                                {% endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="rapport-mission-amender-2">Rapport de Mission Amendé 2</option>
-                                {% endif %}
-
-                                {% if not mission.tdr_amender.name %}
-                                    <option value="rapport-mission-approuver">Rapport de Mission Approuvé</option>
-                                {% endif %}
-
-                            {% endif %}
-                            
-                                
-                        </select>
+    <div class="modal fade" id="addModal" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Ajouter un document </h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'add-mission-doc' mission.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                         
-                    </div>
                     
-                    <div class="form-group">
-                        <label>Joindre le fichier </label>
-                        <div class="input-group">
-                            <input type="file" name="document" class="form-control">
+                        <div class="form-group" id="select-fp">
+                            <label for="fp" id="fp-label">Sélectionnez le type de document</label>
+
+                            <select name="doc-type" id="doc-type" class="form-control" required="">
+
+                                {% if mission.statut_mission != "running" %}
+                                
+                                    <option value="tdr-amender">TDR Amendé</option>
+                                
+                                    <option value="tdr-valid">TDR Validé</option>
+                                
+                                    <option value="ordre-mission">Ordre de Mission</option>
+
+                                {% endif %}
+                                
+
+                                {% if mission.statut_mission == "running" %}
+
+                                    <option value="pv-entretien">PV d'Entretien </option>
+                                
+                                    <option value="compte-rd-entretien">Compte Rendu d'Entretien</option>
+                                
+                                    <option value="fiche-observation">Fiche d'Observation</option>
+                                
+                                    <option value="check-list-conform">Check List Conformite</option>
+                                
+                                    <option value="rapport-mission">Rapport de Mission</option>
+                                
+                                    <option value="rapport-mission-commente">Rapport de Mission commenté</option>
+                                
+                                    <option value="rapport-mission-amender-1">Rapport de Mission Amendé 1</option>
+                                
+                                    <option value="rapport-mission-amender-2">Rapport de Mission Amendé 2</option>
+                                
+                                    <option value="rapport-mission-approuver">Rapport de Mission Approuvé</option>
+                                    
+                                {% endif %}
+                                
+                                    
+                            </select>
+                            
                         </div>
-                    </div>
+                        
+                        <div class="form-group">
+                            <label>Joindre le fichier </label>
+                            <div class="input-group">
+                                <input type="file" name="document" class="form-control">
+                            </div>
+                        </div>
+                        
                     
-                   
-                    <div class="form-group">
-                        <input type="submit" value="Valider" class="form-control btn btn-success" style="margin-bottom: 10px">
-                        <br>
-                        <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
-                    </div>
-                    
-                </form>
+                        <div class="form-group">
+                            <input type="submit" value="Valider" class="form-control btn btn-success" style="margin-bottom: 10px">
+                            <br>
+                            <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
+                        </div>
+                        
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+
+
+    <div class="modal fade" id="cancelModal" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Annuler la mission </h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'cancel-mission' mission.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        
+                    
+                        <div class="form-group"> 
+                            <label for="motif_annulation">Sélectionner le motif d'annulation de la mission : </label>
+                            <select class="form-control" name="motif_annulation">
+                                <option value="Contexte sécuritaire">Contexte sécuritaire</option> 
+                                <option value="Indisponibilité des ressources financières"> Indisponibilité des ressources finanicères  </option> 
+                                <option value="Problème de capacité de l'organisation">Problème de capacité de l'organisation </option> 
+                            </select>
+                        </div>
+    
+                        <div class="form-group"> 
+                            <label for="nom_mission"> Un commentaire sur l'annulation de la mission : </label>
+                            <textarea class="form-control" cols="45" rows="5" name="comment_cancel "> </textarea>
+                        </div>
+                       
+                        <div class="form-group">
+                            <input type="submit" value="Valider" class="form-control btn btn-success" style="margin-bottom: 10px;">
+                            <br>
+                            <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
+                        </div>
+                        
+                    
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <script>
@@ -433,38 +488,48 @@ $(".add-doc").on("click" , function(e){
 $(".start-mission").on("click" , function(e){
     e.preventDefault();
 
-    console.log($(this).attr("alert-id"))
-    data = [{name:"mission_id" , value:$('input["name"=mission_id]').val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+    data = [{name:"mission_id" , value:$("input[name='mission_id']").val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
     $.ajax({
         type: "POST",
         url: $(this).attr("start-mission-endpoint"),
         data: data,
         dataType: "JSON",
         success: function (response) { 
-            window.location = $(this).attr("redirect-endpoint")
+            window.location = window.location.href
         },
         error: function(error){
             console.log(error)
-            toastr.options = options
-            toastr["error"](error.responseText, "SNOIE ERROR")
             
         }
     });
 
-    console.log("start mission")
 })
 
 $(".cancel-mission").on("click" , function(e){
     e.preventDefault();
 
-    console.log("cancel mission")
+
+    $("#cancelModal").modal('show')
 })
 
 
 $(".end-mission").on("click" , function(e){
     e.preventDefault();
 
-    console.log("end mission")
+    data = [{name:"mission_id" , value:$("input[name='mission_id']").val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+    $.ajax({
+        type: "POST",
+        url: $(this).attr("end-mission-endpoint"),
+        data: data,
+        dataType: "JSON",
+        success: function (response) { 
+            window.location = window.location.href
+        },
+        error: function(error){
+            console.log(error)
+            
+        }
+    });
 })
 
 

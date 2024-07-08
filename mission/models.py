@@ -82,6 +82,10 @@ class Mission(models.Model):
     date_mission_start              = models.DateTimeField(null=True)
     date_mission_end                = models.DateTimeField(null=True)
     date_mission_cancel             = models.DateTimeField(null=True)
+
+    user_start_mission              = models.ForeignKey(UserProfile , on_delete=models.SET_NULL, null=True , related_name="start_mission")
+    user_end_mission                = models.ForeignKey(UserProfile , on_delete=models.SET_NULL, null=True , related_name="end_mission")
+    user_cancel_mission             = models.ForeignKey(UserProfile , on_delete=models.SET_NULL, null=True , related_name="cancel_mission")
     
     created_at                  =  models.DateTimeField(auto_now_add=True)
     updated_at                  =  models.DateTimeField(auto_now=True)

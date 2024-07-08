@@ -57,7 +57,7 @@
                         </span>
                     {% endif %}
 
-                    {% if fp.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnateur'  %}
+                    {% if fp.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnator'  %}
                         <span class="">
                             <input type="button" value="Signer la fiche" class="btn btn-warning btn-sm fp-validate">
                         </span>
@@ -76,7 +76,7 @@
                                 <a class="dropdown-item fp-validate" href="#">Signer et valider la fiche</a>
                             {% endif %}
 
-                            {% if fp.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnateur' %}
+                            {% if fp.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnator' %}
                                 <a class="dropdown-item fp-validate" href="#">Signer la fiche</a>
                             {% endif %}
                             
@@ -268,7 +268,7 @@
                                                 <td class="column-title">Date de signature par l'observateur</td>
                                                 <td ><span id="date_sign_obs"> {% if fp.date_sign_obs %} {{fp.date_sign_obs | date:'d/m/Y'}} {% endif %}</span></td>
                                                 <td class="column-title">Date de signature par la coordination</td>
-                                                <td ><span id="date_sign_coo">{% if fp.date_sign_coord %} {{fp.date_sign_coord | date:'d/m/Y'}} {% endif %}</span></td>
+                                                <td ><span id="date_sign_coo">{% if fp.date_sign_coo %} {{fp.date_sign_coo | date:'d/m/Y'}} {% endif %}</span></td>
                                             </tr>
                                             <tr>
                                                 <td class="column-title"> Visa </td>
@@ -281,7 +281,7 @@
                                                 <td class="column-title">Visa</td>
                                                 <td >
                                                     
-                                                    <img src="{{fp.sign_coord}}" alt="" id="sign_coo"> 
+                                                    <img src="{{fp.sign_coor}}" alt="" id="sign_coo"> 
                                                     
                                                 </td>
                                             </tr>

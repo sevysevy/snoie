@@ -18,8 +18,12 @@ def fiche_info_registry(request , page):
 
     user_profile = request.user.userprofile
 
+    if user_profile.role.name_code ==  "coordonnator":
+        fiches = FicheInformation.objects.filter( state__in = ["validated_org" , "validated_coord"] ).order_by('id').reverse()
+    else:
+        fiches = FicheInformation.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
 
-    fiches = FicheInformation.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
+    
 
     paginator = Paginator(fiches , per_page=15 , orphans=5, allow_empty_first_page=True)
 
@@ -403,8 +407,12 @@ def fiche_pertinence_registry(request , page):
 
     user_profile = request.user.userprofile
 
+    if user_profile.role.name_code ==  "coordonnator":
+        fiches = FichePertinence.objects.filter( state__in = ["validated_org" , "validated_coord"]).order_by('id').reverse()
+    else:
+        fiches = FichePertinence.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
 
-    fiches = FichePertinence.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
+    
 
     paginator = Paginator(fiches , per_page=15 , orphans=5, allow_empty_first_page=True)
 

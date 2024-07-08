@@ -17,9 +17,6 @@
             
         </div>
 
-        
-        
-    
     </section>
 
     <style>
@@ -60,7 +57,7 @@
                         </span>
                     {% endif %}
 
-                    {% if fi.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnateur'  %}
+                    {% if fi.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnator'  %}
                         <span class="">
                             <input type="button" value="Signer  la fiche" class="btn btn-warning btn-sm fi-validate">
                         </span>
@@ -79,7 +76,7 @@
                                 <a class="dropdown-item fi-validate" href="#">Signer et valider la fiche</a>
                             {% endif %}
 
-                            {% if fi.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnateur' %}
+                            {% if fi.state == "validated_org"  and request.user.userprofile.role.name_code == 'coordonnator' %}
                                 <a class="dropdown-item fi-validate" href="#">Signer la fiche</a>
                             {% endif %}
                             

@@ -14,8 +14,10 @@ def alert_registry(request , page):
 
     user_profile = request.user.userprofile
 
-
-    alerts = Alert.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
+    if user_profile.role.name_code ==  "coordonnator":
+        alerts = Alert.objects.order_by('id').reverse()
+    else:
+        alerts = Alert.objects.filter(organisation = user_profile.organisation).order_by('id').reverse()
 
     paginator = Paginator(alerts , per_page=15 , orphans=5, allow_empty_first_page=True)
 

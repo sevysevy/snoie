@@ -80,8 +80,8 @@ def statistic_fiche_datas(request):
     start = request.GET.get('start',"1970-01-01")
     end = request.GET.get('end', date.today().strftime("%Y-%m-%d"))
 
-    fiche_info = FicheInformation.objects.filter(created_at__date__range = (start , end) , state="validated_org")
-    fiche_perti = FichePertinence.objects.filter(created_at__date__range = (start , end) , state="validated_org")
+    fiche_info = FicheInformation.objects.filter(created_at__date__range = (start , end) , state__in=["validated_org","validated_coord"])
+    fiche_perti = FichePertinence.objects.filter(created_at__date__range = (start , end) , state__in=["validated_org","validated_coord"])
     
     number_fi = fiche_info.count()
     number_fp = fiche_perti.count()
@@ -166,7 +166,7 @@ def statistic_mission_datas(request):
 
     mission_ended = missions.filter(statut_mission = "ended")
     mission_started = missions.filter(statut_mission = "running")
-    mission_cancel = missions.filter(statut_mission = "cancelled")
+    mission_cancel = missions.filter(statut_mission = "canceled")
 
 
     total_mission = missions.count()

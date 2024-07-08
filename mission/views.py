@@ -39,14 +39,59 @@ def start_mission(request , id):
 
     if request.method == 'POST':
 
-        mission = Mission.objects.filter(id = id)
+        missions = Mission.objects.filter(id = id)
+        mission = missions.first()
         mission.statut_mission = "running"
+        mission.date_mission_start = date.today()
+        mission.user_start_mission = user_profile
 
         mission.save()
         
-    context = {"message": "mision started succefully"}
+    context = {"message": "mission started succefully"}
     
     return JsonResponse(context)
+
+
+@login_required
+def end_mission(request , id):
+
+    user_profile = request.user.userprofile
+
+    if request.method == 'POST':
+
+        missions = Mission.objects.filter(id = id)
+        mission = missions.first()
+        mission.statut_mission = "ended"
+        mission.date_mission_end = date.today()
+        mission.user_end_mission = user_profile
+
+        mission.save()
+        
+    context = {"message": "mission started succefully"}
+    
+    return JsonResponse(context)
+
+
+@login_required
+def cancel_mission(request , id):
+
+    user_profile = request.user.userprofile
+
+    if request.method == 'POST':
+        print(request.POST)
+        missions = Mission.objects.filter(id = id)
+        mission = missions.first()
+        mission.statut_mission = "canceled"
+        mission.date_mission_cancel = date.today()
+        mission.comment_cancel = request.POST.get("comment_cancel", "")
+        mission.motif_annulation = request.POST.get("motif_annulation" , "")
+        mission.user_cancel_mission = user_profile
+
+        mission.save()
+        
+    context = {"message": "mission canceled succefully" ,}
+    
+    return redirect("detail-mission" , 1 )
 
 
 @login_required
@@ -71,7 +116,12 @@ def create_mission(request):
         
     mission_count = Mission.objects.all().count() + 1
 
-    fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter(organisation = user.organisation ,  state = "validated_coord" , mission = None)]
+    if user.role.name_code ==  "coordonnator":
+        fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter( state = "validated_coord" , mission = None)]
+    else:
+        fiche_pertinence = [{"id": elm.id , "ref":elm.ref_fiche} for elm in FichePertinence.objects.filter(organisation = user.organisation ,  state = "validated_coord" , mission = None)]
+
+    
     mission_name = ""
 
     
@@ -243,7 +293,7 @@ def add_mission_doc(request, id):
             mission.save()
 
             
-            redirect_url = reverse('detail-mission',  kwargs={'id': 1},)
+            redirect_url = reverse('detail-mission',  kwargs={'id': mission.id},)
             return redirect(redirect_url)  
     
 
