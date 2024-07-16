@@ -31,6 +31,7 @@ base_urlpatterns = i18n_patterns(
     path('shared/' , include('_shared.urls')),
     path('mission/' , include('mission.urls')),
     path('stats/' , include('Statistic.urls')),
+    path('lobbying/' , include('Lobbying.urls')),
     path('' , index , name='index')
 
 )

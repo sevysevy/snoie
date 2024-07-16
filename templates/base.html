@@ -124,10 +124,15 @@
                                         <a href="{% url 'mission-registry' 1 %}" class="nav-link {% if 'mission' in path %} active {% endif %}">Mission</a>
                                     </li>
 
-                                    {% if request.user.userprofile.role.name_code in "coordonnator,responsable" %}
+                                    {% if request.user.userprofile.organisation.organisation_type.name_code == "lobbying" or request.user.userprofile.role.name_code == "coordonnator" %}
 
-                                        <li class="nav-item {% if 'communication' in path %}  menu-is-opening menu-open {% endif %}">
-                                            <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Lobbying</a>
+                                        <li class="nav-item {% if 'lobby' in path %}  menu-is-opening menu-open {% endif %}">
+                                            {% if request.user.userprofile.role.name_code == "coordonnator" %}
+                                                <a href="{% url 'lobby-registry' 1 %}" class="nav-link {% if 'lobby' in path %} active {% endif %}">Communication & Lobbying</a>
+                                            {% else %}
+                                                <a href="{% url 'lobby-registry' 1 %}" class="nav-link {% if 'lobby' in path %} active {% endif %}">Lobbying</a>
+                                            {% endif %}
+                                            
                                         </li>
                                     {% endif %}
             

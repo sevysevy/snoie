@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %} 
+    SNOIE | {% translate "Action Lobbying" %}
+{% endblock %}
+
+
+{% block content %}
+<section class="content-header row">
+    <div class="col-sm-6">
+    <h1>Communication & Lobbying</h1>
+    </div>
+   
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Communication & Lobbying | Liste des missions</h3>
+                    </div>
+        
+                    <div class="card-body">
+                        <!--a href="" class="btn btn-primary mb-3"  id="create-mission">Créer une action de communication</a-->
+                        <div class="table-responsive">
+                            
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td><strong>Référence de la mission </strong></td>
+                                        <td><strong>Date de fin </strong></td>
+                                        <td><strong>Auteur de la mission</strong></td> 
+                                        <td><strong>Organisation créatrice de la mission</strong></td> 
+                                        <td><strong>Actions</strong></td> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for lobby in lobbys  %}
+                                        <tr>
+            
+                                            <td>{{lobby.name}}</td>
+                                            <td> {{lobby.date_mission_end | date:'d/m/Y'}}</td>
+                                            <td> {{lobby.user.fullName}}</td>
+                                            <td> {{lobby.organisation.name}}</td>
+                
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <a href="{% url 'lobby-details' lobby.id %}" class="table-button view" alert-id="{{lobby.id}}" info-url="" >
+                                                                    <i class="fas fa-eye" data-toggle="tooltip" title="Plus de détails sur cette action de lobbying"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>     
+
+                                    {% endfor %}
+                                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% block pagination %}
+
+                            <div class="pagination">
+                            
+                            
+
+                                {% for page_number in missions.paginator.page_range %}
+
+                                    {% if page_number == missions.number %}
+
+                                        <div class="pagination-button current">{{page_number}}</div>
+
+                                    {% else %}
+
+                                        <a
+
+                                            href="{% url 'alerts-registry' page_number %}"
+
+                                            class="pagination-button"
+
+                                        >
+
+                                            {{page_number}}
+
+                                        </a>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+
+<div class="modal fade" id="addCommunication">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Créer une action de communication </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div class="form-group"> 
+                        <label for="nom_mission">Référence  </label>
+                        <?php $new_id =  $com +001 ;
+                        if(mb_strlen($new_id)< 2 ){$new_id = 00 . $new_id ;} 
+                        if(mb_strlen($new_id) < 3 ){$new_id = 0 . $new_id ;} 
+                        ?>
+                        <input type="text" name="ref_com" value="<?= 'COMM/'. $new_id. '/RO-SNOIE/FODER/'.date('mY') ?>" class="form-control" disabled>
+
+                    </div>
+                  
+                    <div class="form-group">
+                        <label for="nom_mission">Sélectionnez les missions concernées</label>                        
+                        <?php foreach($missions as $mission): ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value= <?= $mission['nom_mission'] ?> name="nom_mission[]"  >
+                                <label class="form-check-label">
+                                    <?= $mission['nom_mission'] ?>
+                                </label>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="submit" value="Créer" class="form-control btn btn-success" style="margin-bottom: 10px">
+                        <br>
+                        <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block js %}
+    
+{% endblock %}

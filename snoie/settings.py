@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'AlertsManagement',
     'FicheManagement',
     'mission',
-    'Statistic'
+    'Statistic',
+    'Lobbying'
 ]
 
 MIDDLEWARE = [

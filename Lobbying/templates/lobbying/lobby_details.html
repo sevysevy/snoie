@@ -1,0 +1,597 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load widget_tweaks %}
+{% get_media_prefix  as MEDIA_URL %}
+
+{% block title %} 
+    SNOIE | {% translate "Mission" %}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="content-header row">
+    <div class="col-sm-12">
+        <h1>Ref: {{mission.name}}</h1>
+        {% csrf_token %}
+    </div>
+
+    
+   
+</section>
+<hr>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="">
+                    <input type="button" value="Ajouter un document" class="btn btn-warning btn-sm add-doc-lobby">
+                </span>
+
+
+                <span class="">
+                    <input type="button" value="Assigner la mission" class="btn btn-success btn-sm assign-mission">
+                </span>
+
+
+                <span class="">
+                    <input type="button" value="Archiver la mission" class="btn btn-secondary btn-sm archivate-mission">
+                </span>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-success mt-3">
+                    
+                    <div class="card-body">
+
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Documents associés</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Activités</a>
+                                
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <br><br>
+                                <ul class="list_details_mission">
+                                    
+                                    {% if mission.rapport_mission_approuve %}
+                                
+                                        <li>
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-approuver" rel="noopener noreferrer" style = "padding-right : 20px" > Rapport de mission approuvé</a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_mission_approuve | date:'d/m/Y'}}</span>
+                                        
+                                        </li>
+
+                                    {% endif %}
+
+                                    {% if mission.lettre_de_transmission %}
+                                
+                                        <li>
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-approuver" rel="noopener noreferrer" style = "padding-right : 20px" > Lette de transmission </a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_mission_approuve | date:'d/m/Y'}}</span>
+                                        
+                                        </li>
+                                        
+                                    {% endif %}
+
+                                    {% if mission.decharge_lettre_de_transmission %}
+                                
+                                        <li>
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-approuver" rel="noopener noreferrer" style = "padding-right : 20px" > Lette de transmission </a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_mission_approuve | date:'d/m/Y'}}</span>
+                                        
+                                        </li>
+                                        
+                                    {% endif %}
+
+                                    {% if mission.plan_de_lobbying %}
+                                
+                                        <li>
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-approuver" rel="noopener noreferrer" style = "padding-right : 20px" > Lette de transmission </a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_mission_approuve | date:'d/m/Y'}}</span>
+                                        
+                                        </li>
+                                        
+                                    {% endif %}
+                                    
+                                </ul>
+                            </div>
+                            <!--div class="tab-pane fade activite-section" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                <br><br>
+                            <?php if(empty($activites_lobbying)) : ?>
+                                <div class="activites-mission">
+                                    <p class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i>
+                                    Vous n'avez encore ajouté aucune activité.
+                                    </p>
+                                </div>
+                                    
+                                <?php endif ; ?>
+                                <p class="title-section"><i class="right fas fa-angle-right" ></i>Créer une activité</p>
+                                <br>
+                                <form action="<?= base_url("creer-activite-lobbying") ?>" method="POST" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label for="nom_activite">Nom de l'activité</label>
+                                        <input type="text" name="nom_activite" class="form-control"  required>
+
+                                        <input value="<?= $comm['id_communication']?>" name="id" hidden>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="desc_activite">Description</label>
+                                        <textarea name="desc_activite" id="" cols="20" rows="10" class="form-control" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fichier">Document associé</label>
+                                        <input type="file" name="fichier_activite" class="form-control" >
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Créer" class="btn btn-primary">
+                                    </div>
+                                </form>
+                                <p class="title-section"><i class="right fas fa-angle-right" ></i>Liste des activités</p>
+                                <br>
+                                <?php if(!empty($activites_lobbying)): ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <th>Nom de l'activite</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                                <th>Date de création</th> 
+                                                <th>Auteur</th>
+                                            </thead>
+                                            <tbody>
+                                            <?php foreach ($activites_lobbying as $activite) :  ?> 
+                                                <tr>
+                                                    <td class=""><?= $activite['nom_activite'] ?></td>
+                                                    <td><?= $activite['desc_activite'] ?></td>
+                                                    <td class="justify-content-between">
+                                                        <?php if(!empty($activite['fichier'])) : ?>
+                                                            <a href="<?php echo base_url('lecture-activite/'.$activite['fichier']) ?>" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        <?php else : ?>
+                                                                <span style="font-style: italic;">Pas de document !</span> 
+                                                        <?php endif ; ?>
+                                                    </td>
+                                                    <td><?= $activite['created_at']?></td>
+                                                    <td><?= $activite['auteur_activite'] ?></td>
+                                                </tr>
+                                                <?php endforeach ; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php endif ; ?>
+                            </div-->
+                        </div>
+
+                        <!--input type="text" value="{{mission.id}}" name="mission_id"  hidden/>
+                        <ul class="list_details_mission">
+                            <li>
+                                <a href="{% url 'view-update-fi' mission.fiche_information.id %}" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                    Fiche d'information  
+                                    
+                                </a>
+
+                                <span class="date_ajout_document">Ajouté le {{mission.fiche_information.created_at | date:'d/m/Y'}} </span>
+
+                            </li>
+
+                            <li>
+                                <a href="{% url 'view-update-fp' mission.fiche_pertinence.id %}" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                    Fiche de pertinence  
+                                    
+                                </a>
+
+                                <span class="date_ajout_document">Ajouté le {{mission.fiche_pertinence.created_at | date:'d/m/Y'}} </span>
+
+                            </li> 
+                            {% if mission.draft_tdr  %}
+
+                                <li>
+                                    <a href="{% url  'download-mission-doc' mission.id %}?doc-type=draft-tdr" rel="noopener noreferrer" style = "padding-right : 20px">   Premier draft de Termes de reference</a>
+                                    
+                                    <span class="date_ajout_document">Ajouté le  {{mission.date_draft_tdr | date:'d/m/Y'}}</span>
+                                </li>
+                            {% endif %}
+
+
+
+                            {% if mission.tdr_amender  %}
+                            
+                                    <li>
+                                        
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=tdr-amender" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Termes de references amendés </a>
+                                        
+                                        
+                                        <span class="date_ajout_document">Ajouté le {{mission.date_tdr_amender | date:'d/m/Y'}} </span>
+                                        
+                                    </li>
+                            {% endif %}
+
+                            {% if mission.tdr_valid  %}
+                                
+                                    <li>
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=tdr-valid" rel="noopener noreferrer" style = "padding-right : 20px" target="_blank">
+                                        Termes de references validé
+                                        
+                                        </a>
+
+                                        <span class="date_ajout_document">Ajouté le {{mission.date_tdr_valid | date:'d/m/Y'}}</span>
+                                        
+                                    </li>
+
+                            {% endif %}
+
+                            {% if mission.ordre_mission  %}
+                                    
+                                    <li>
+
+                                        
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=ordre-mission" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Ordre de mission </a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_ordre_mission | date:'d/m/Y'}}</span>
+                                        
+
+                                    </li>
+
+                            {% endif %}
+
+                            {% if mission.pv_entretient  %}
+                                
+
+                                    <li>
+                                        
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=pv-entretien" rel="noopener noreferrer" style = "padding-right : 20px">
+                                            PV d'entretien   
+                                        </a>
+                                        
+                                        <span class="date_ajout_document">Ajo
+                                            
+                                            
+                                            
+                                            
+                                            uté le {{mission.date_pv_entretien | date:'d/m/Y'}} </span>
+                                        
+                                    </li>
+
+                            {% endif %}
+
+
+                            {% if mission.compte_rendu_entretient  %}
+
+                                    <li>
+                                        
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=compte-rd-entretien" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Compte rendu d'entretien </a>
+                                        
+                                        
+                                            <span class="date_ajout_document"> Ajouté le {{mission.date_compte_rendu_entretien | date:'d/m/Y'}} </span>
+                                        
+
+                                    </li>
+
+                            {% endif %}
+
+                            {% if mission.fiche_observation  %}
+                                
+
+                                    <li>
+
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=fiche-observation" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Fiche d'observation</a>
+                                        
+
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_fiche_observation | date:'d/m/Y'}}</span>
+                                        
+                                    </li>
+
+                            {% endif %}
+
+
+                            {% if mission.check_list_conformite %}
+                
+                                    <li>
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=check-list-conform" rel="noopener noreferrer" style = "padding-right : 20px"  >
+                                            Check list de conformité </a>
+                                        
+
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_check_list | date:'d/m/Y'}}</span>
+                                    </li>
+                            {% endif %}
+                            
+                            {% if mission.rapport_mission %}
+                                
+                                    <li>
+                                        
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission" rel="noopener noreferrer" style = "padding-right : 20px" > Premier draft de rapport de mission  </a>
+                                        
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_rapport_mission | date:'d/m/Y'}}</span>
+                                        
+                                    </li>  
+                            {% endif %}  
+
+                            {% if mission.rapport_mission_commente %}
+                                
+                                    <li>
+                                        
+                                            <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-commente" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                            Rapport de mission commenté</a>
+                                        
+                                            
+                                            <span class="date_ajout_document">Ajouté le  {{mission.date_mission_commente | date:'d/m/Y'}}</span>
+                                        
+                                    </li>
+
+                            {% endif %}
+
+                            {% if mission.rapport_mission_amende_1 %}
+
+                                    <li>
+                                        
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-amender-1" rel="noopener noreferrer" style = "padding-right : 20px" >
+                                        Rapport de mission amendé 1 </a>
+                                    
+                                        <span class="date_ajout_document">Ajouté le {{mission.date_mission_amende_1 | date:'d/m/Y'}}</span>
+                                        
+                                    </li>
+
+                            {% endif %}
+
+
+                            {% if mission.rapport_mission_amende_2 %}
+                                
+                                    <li>
+                                        
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-amender-2" rel="noopener noreferrer" style = "padding-right : 20px" > Rapport de mission amendé 2 </a>
+                                        
+
+                                        <span class="date_ajout_document">Ajouté le  {{mission.date_mission_amende_2 | date:'d/m/Y'}}</span>
+                                        
+                                    </li>
+
+                            {% endif %}
+
+
+                            {% if mission.rapport_mission_approuve %}
+                                
+                                    <li>
+                                        <a href="{% url  'download-mission-doc' mission.id %}?doc-type=rapport-mission-approuver" rel="noopener noreferrer" style = "padding-right : 20px" > Rapport de mission approuvé</a>
+                                    
+                                        <span class="date_ajout_document">Ajouté le  {{mission.date_mission_approuve | date:'d/m/Y'}}</span>
+                                    
+                                    </li>
+                            {% endif %}
+
+                            
+
+                        </ul>
+
+                        {% if mission.statut_mission == "canceled" %}
+                            <br><br>
+                            <h4> Mission annulée par : {{mission.user_cancel_mission.fullName}} </h4>
+                            <br>
+                            <h5>Motif de la non réalisation de la mission : </h4>
+                            <textarea class="form-control" readonly = "readonly" > {{mission.motif_annulation}} </textarea>
+                            <br><br>
+
+                            <h4>Commentaires sur la non réalisation de la mission : </h4>
+                            <textarea class="form-control" readonly = "readonly" > {{mission.comment_cancel}} </textarea>
+                        {% endif %}-->
+
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+</section>
+
+
+
+    <div class="modal fade" id="addModal" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Ajouter un document </h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'add-mission-doc' mission.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        
+                    
+                        <div class="form-group" id="select-fp">
+                            <label for="fp" id="fp-label">Sélectionnez le type de document</label>
+
+                            <select name="doc-type" id="doc-type" class="form-control" required="">
+
+                                {% if mission.statut_mission != "running" %}
+                                
+                                    <option value="tdr-amender">TDR Amendé</option>
+                                
+                                    <option value="tdr-valid">TDR Validé</option>
+                                
+                                    <option value="ordre-mission">Ordre de Mission</option>
+
+                                {% endif %}
+                                
+
+                                {% if mission.statut_mission == "running" %}
+
+                                    <option value="pv-entretien">PV d'Entretien </option>
+                                
+                                    <option value="compte-rd-entretien">Compte Rendu d'Entretien</option>
+                                
+                                    <option value="fiche-observation">Fiche d'Observation</option>
+                                
+                                    <option value="check-list-conform">Check List Conformite</option>
+                                
+                                    <option value="rapport-mission">Rapport de Mission</option>
+                                
+                                    <option value="rapport-mission-commente">Rapport de Mission commenté</option>
+                                
+                                    <option value="rapport-mission-amender-1">Rapport de Mission Amendé 1</option>
+                                
+                                    <option value="rapport-mission-amender-2">Rapport de Mission Amendé 2</option>
+                                
+                                    <option value="rapport-mission-approuver">Rapport de Mission Approuvé</option>
+                                    
+                                {% endif %}
+                                
+                                    
+                            </select>
+                            
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Joindre le fichier </label>
+                            <div class="input-group">
+                                <input type="file" name="document" class="form-control">
+                            </div>
+                        </div>
+                        
+                    
+                        <div class="form-group">
+                            <input type="submit" value="Valider" class="form-control btn btn-success" style="margin-bottom: 10px">
+                            <br>
+                            <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="cancelModal" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Annuler la mission </h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'cancel-mission' mission.id %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        
+                    
+                        <div class="form-group"> 
+                            <label for="motif_annulation">Sélectionner le motif d'annulation de la mission : </label>
+                            <select class="form-control" name="motif_annulation">
+                                <option value="Contexte sécuritaire">Contexte sécuritaire</option> 
+                                <option value="Indisponibilité des ressources financières"> Indisponibilité des ressources finanicères  </option> 
+                                <option value="Problème de capacité de l'organisation">Problème de capacité de l'organisation </option> 
+                            </select>
+                        </div>
+    
+                        <div class="form-group"> 
+                            <label for="nom_mission"> Un commentaire sur l'annulation de la mission : </label>
+                            <textarea class="form-control" cols="45" rows="5" name="comment_cancel "> </textarea>
+                        </div>
+                       
+                        <div class="form-group">
+                            <input type="submit" value="Valider" class="form-control btn btn-success" style="margin-bottom: 10px;">
+                            <br>
+                            <input type="button" value="Annuler" class="btn btn-warning form-control" data-dismiss="modal">
+                        </div>
+                        
+                    
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+
+$(document).ready(function () {
+
+    $( "#tabs" ).tabs({
+        active: 0
+    });
+
+$(".add-doc").on("click" , function(e){
+    e.preventDefault()
+
+    $("#addModal").modal('show')
+})
+
+
+$(".start-mission").on("click" , function(e){
+    e.preventDefault();
+
+    data = [{name:"mission_id" , value:$("input[name='mission_id']").val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+    $.ajax({
+        type: "POST",
+        url: $(this).attr("start-mission-endpoint"),
+        data: data,
+        dataType: "JSON",
+        success: function (response) { 
+            window.location = window.location.href
+        },
+        error: function(error){
+            console.log(error)
+            
+        }
+    });
+
+})
+
+$(".cancel-mission").on("click" , function(e){
+    e.preventDefault();
+
+
+    $("#cancelModal").modal('show')
+})
+
+
+$(".end-mission").on("click" , function(e){
+    e.preventDefault();
+
+    data = [{name:"mission_id" , value:$("input[name='mission_id']").val()} , {name:"csrfmiddlewaretoken" , value:$("input[name='csrfmiddlewaretoken']").val()}]
+    $.ajax({
+        type: "POST",
+        url: $(this).attr("end-mission-endpoint"),
+        data: data,
+        dataType: "JSON",
+        success: function (response) { 
+            window.location = window.location.href
+        },
+        error: function(error){
+            console.log(error)
+            
+        }
+    });
+})
+
+
+
+});
+
+
+
+</script>
+
+
+{% endblock %}

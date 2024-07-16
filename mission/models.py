@@ -12,6 +12,7 @@ class Mission(models.Model):
     user                            = models.ForeignKey(UserProfile , on_delete=models.SET_NULL, null=True)
 
     organisation                    = models.ForeignKey(Organisation , on_delete= models.SET_NULL, null=True)
+    assign_organisation             = models.ForeignKey(Organisation , on_delete= models.SET_NULL, null=True , related_name = "assign_mission" )
     fiche_information               = models.ForeignKey(FicheInformation , on_delete=models.SET_NULL, null=True)
     fiche_pertinence                = models.ForeignKey(FichePertinence, on_delete=models.SET_NULL, null=True)
 
