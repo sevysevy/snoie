@@ -8,6 +8,8 @@ from django.http import JsonResponse , HttpResponseBadRequest , HttpResponseServ
 from django.contrib import messages
 from django.core.paginator import Paginator
 
+from UserAction.views import add_comment, create_action
+
 # Create your views here.
 @login_required
 def alert_registry(request , page):
@@ -50,6 +52,9 @@ def create_alert(request):
                 num_order  = Alert.get_num_order()
 
                 alert = Alert.objects.create(num_order=num_order , declaration=declaration , date_alert = date_alert , user_profile = user_profile , organisation = user_profile.organisation)
+
+                create_action(name_code = 'create-alert' , autor=user_profile , object_id = alert.id)
+
                 request.session['alert_id'] = alert.id
                 step = "2"
 
@@ -82,6 +87,7 @@ def create_alert(request):
                         alert.village = village
                        
                         alert.save()
+                        create_action(name_code = 'update-alert' , autor=user_profile , object_id = alert.id)
                         step = "3"
 
                         context = {'alert_id':alert.id , "next-step": "3"}
@@ -101,10 +107,11 @@ def create_alert(request):
                 return HttpResponseServerError("Une erreur est survenue , merci de contacter votre administrateur")
 
         if step == "3":
-            print(request.POST)
             try:
+                print(request.POST)
                 canal = request.POST.get('canal')
                 tel_informateur = request.POST.get('tel-informateur')
+                comment = request.POST.get("comment", None)
 
                 if 'alert_id' in request.session:
                     id = request.session['alert_id']
@@ -117,6 +124,8 @@ def create_alert(request):
                         alert.informant_phone = tel_informateur
                         
                         alert.save()
+                        create_action(name_code = 'update-alert' , autor=user_profile , object_id = alert.id)
+                        add_comment(name_code = 'create-alert' , object_id = alert.id , body = comment , autor=user_profile)
                         step = "3"
 
                         context = {'alert_id':alert.id }

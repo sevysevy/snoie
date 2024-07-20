@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'FicheManagement',
     'mission',
     'Statistic',
-    'Lobbying'
+    'Lobbying',
+    'UserAction'
 ]
 
 MIDDLEWARE = [

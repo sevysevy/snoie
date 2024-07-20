@@ -149,6 +149,7 @@ $(document).ready(function () {
             console.log($("#alert_declaration").length)
             var step = $("#step").val()
             if (step == "1"){
+ 
                 $.ajax({
                     type: "POST",
                     url: window.location.href,
@@ -230,42 +231,99 @@ $(document).ready(function () {
             
             else if(step == "3"){
                 console.log(donnee)
-                $.ajax({
-                    type: "POST",
-                    url: window.location.href,
-                    data: donnee,
-                    dataType: "JSON",
-                    success: function (response) { 
-                        $("#step").val(response["next-step"]) 
-                        console.log(response)
+                get_comment_template()
+
+                $('body').on("click" ,"#get-comment" , function(){
+                    donnee.push({"name":"comment" , "value": $("#comment").val()})
+                    close_comment_modal()
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            $("#step").val(response["next-step"]) 
+                            console.log(response)
+        
+                            //Add Class Active
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            //show the next fieldset
+                            next_fs.show(); 
+                            //hide the current fieldset with style
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
     
-                        //Add Class Active
-                        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-                        
-                        //show the next fieldset
-                        next_fs.show(); 
-                        //hide the current fieldset with style
-                        current_fs.animate({opacity: 0}, {
-                            step: function(now) {
-                                // for making fielset appear animation
-                                opacity = 1 - now;
+                            
+                        },
+                        error: function(error){
+                            console.log(error)
+                            toastr.options = options
+                            toastr["error"](error.responseText, "SNOIE ERROR")
+                            
+                        }
+                    });
+
+                })
+
+                $("body").on("click" , "#no-comment" , function(e){
+                    e.preventDefault()
+                    close_comment_modal()
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.href,
+                        data: donnee,
+                        dataType: "JSON",
+                        success: function (response) { 
+                            $("#step").val(response["next-step"]) 
+                            console.log(response)
+        
+                            //Add Class Active
+                            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                            
+                            //show the next fieldset
+                            next_fs.show(); 
+                            //hide the current fieldset with style
+                            current_fs.animate({opacity: 0}, {
+                                step: function(now) {
+                                    // for making fielset appear animation
+                                    opacity = 1 - now;
+        
+                                    current_fs.css({
+                                        'display': 'none',
+                                        'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                }, 
+                                duration: 600
+                            });
     
-                                current_fs.css({
-                                    'display': 'none',
-                                    'position': 'relative'
-                                });
-                                next_fs.css({'opacity': opacity});
-                            }, 
-                            duration: 600
-                        });
-                    },
-                    error: function(error){
-                        console.log(error)
-                        toastr.options = options
-                        toastr["error"](error.responseText, "SNOIE ERROR")
-                        
-                    }
-                });
+                            
+                        },
+                        error: function(error){
+                            console.log(error)
+                            toastr.options = options
+                            toastr["error"](error.responseText, "SNOIE ERROR")
+                            
+                        }
+                    });
+                })
+
+
+
+                
+                
             }
             
 

@@ -78,3 +78,35 @@ function get_alert_canals(){
     return canals
 
 }
+
+
+function get_comment_template(){
+    $.ajax({
+        type: "GET",
+        url: $("#comment-template").val(),
+        dataType: "JSON",
+        success: function (response) { 
+            //console.log(response.html)
+            $('.comment-modal').html(response.html)
+
+            $("#commentModal").modal('show')
+
+        },
+        
+    })
+}
+
+
+function get_comment(){
+    let comment = $("#comment").val()
+
+    return comment
+}
+
+
+function close_comment_modal(){
+    $("#commentModal").modal('hide')
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+    $('.comment-modal').html('')
+}

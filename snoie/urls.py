@@ -32,6 +32,7 @@ base_urlpatterns = i18n_patterns(
     path('mission/' , include('mission.urls')),
     path('stats/' , include('Statistic.urls')),
     path('lobbying/' , include('Lobbying.urls')),
+    path('user-action/', include('UserAction.urls')),
     path('' , index , name='index')
 
 )

@@ -74,163 +74,247 @@
         
                 <!-- Sidebar -->
                 <div class="sidebar">
-                <!-- Sidebar user (optional) -->
-                <div class="">
-                    <div class="info">
-                        <span class="sidebar_username">
-                            <i class="fa fa-user" aria-hidden="true"></i> 
-                            {{request.user.userprofile.fullName}}
-                        </span> <a href="#"  data-toggle="dropdown" > <i class="fa-solid fa-ellipsis-vertical" style="color: white"></i> </a> 
-                            <div class="dropdown-menu">  
-                            <a href= '' class="dropdown-item" style="color: initial" > Mon profil </a>
-                            </div> 
-                            <br>
-                        <span class="user_statut"> {{request.user.userprofile.role}} </span>
-                        
+                    <!-- Sidebar user (optional) -->
+                    <div class="">
+                        <div class="info">
+                            <span class="sidebar_username">
+                                <i class="fa fa-user" aria-hidden="true"></i> 
+                                {{request.user.userprofile.fullName}}
+                            </span> <a href="#"  data-toggle="dropdown" > <i class="fa-solid fa-ellipsis-vertical" style="color: white"></i> </a> 
+                                <div class="dropdown-menu">  
+                                <a href= '' class="dropdown-item" style="color: initial" > Mon profil </a>
+                                </div> 
+                                <br>
+                            <span class="user_statut"> {{request.user.userprofile.role}} </span>
+                            
+                        </div>
                     </div>
-                </div>
-        
-        
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- Add icons to the links using the .nav-icon class
-                        with font-awesome or any other icon font library -->
-                        <!--Observateur-->
-                            {% with path=request.path %}
-
-                                {% if request.user.userprofile.role.name_code in "coordonnator,responsable,observator" %}
-                                
-                                    <li class="nav-item {% if 'alert' in path %}  menu-is-opening menu-open {% endif %}">
-                                        <a href="{% url 'alerts-registry' 1 %}" class="nav-link alert_denonciation {% if 'alert' in path %} active  {% endif %}">Alertes et dénonciation</a>
-                                    </li>
-
-                                    <li class="nav-item {% if 'fiche' in path %}  menu-is-opening menu-open {% endif %} ">
-                                        <a href="#" class="nav-link   {% if 'fiche' in path %} active {% endif %}">
-                                            Fiches
-                                            <i class="right fas fa-angle-left"></i>
-                                        </a>
-                                        <ul class="nav nav-treeview" {% if 'fiche' in path %} style="display: block;"  {% endif %}>
-                                            <li class="nav-item">
-                                                <a href="{% url 'fiche-info-registry' 1 %}" class="nav-link  {% if 'fiche-info' in path %} active {% endif %}">Fiches d'information</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a href="{% url 'fiche-pertinence-registry' 1 %}" class="nav-link  {% if 'fiche-pertinence' in path %} active {% endif %}">Fiches de pertinence</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                
-                                    <li class="nav-item {% if 'mission' in path %}  menu-is-opening menu-open {% endif %}">
-                                        <a href="{% url 'mission-registry' 1 %}" class="nav-link {% if 'mission' in path %} active {% endif %}">Mission</a>
-                                    </li>
-
-                                    {% if request.user.userprofile.organisation.organisation_type.name_code == "lobbying" or request.user.userprofile.role.name_code == "coordonnator" %}
-
-                                        <li class="nav-item {% if 'lobby' in path %}  menu-is-opening menu-open {% endif %}">
-                                            {% if request.user.userprofile.role.name_code == "coordonnator" %}
-                                                <a href="{% url 'lobby-registry' 1 %}" class="nav-link {% if 'lobby' in path %} active {% endif %}">Communication & Lobbying</a>
-                                            {% else %}
-                                                <a href="{% url 'lobby-registry' 1 %}" class="nav-link {% if 'lobby' in path %} active {% endif %}">Lobbying</a>
-                                            {% endif %}
-                                            
-                                        </li>
-                                    {% endif %}
             
-                                    <li class="nav-item {% if 'stats' in path %}  menu-is-opening menu-open {% endif %}">
-                                        <a href="" class="nav-link {% if 'stats' in path %} active {% endif %}">
-                                            Statistiques
-                                            <i class="right fas fa-angle-left"></i>
-                                        </a>
-                                        
-                                        <ul class="nav nav-treeview" {% if 'stats' in path %} style="display: block;"  {% endif %}>
-                                                <li class="nav-item">
-                                                    <a href="{% url 'stat-fiche' %}" class="nav-link {% if 'stat-fi' in path %} active {% endif %}">
-                                                        Fiches
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{% url 'stat-alert' %}" class="nav-link {% if 'stat-al' in path %} active {% endif %}">
-                                                        Alertes/Dénonciations
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                <a href="{% url 'stat-mission' %}" class="nav-link {% if 'stat-mis' in path %} active {% endif %}">
-                                                    Missions</a>
-                                                </li>
-                                            
-                                        </ul>
-                                    </li>
+            
+                    <!-- Sidebar Menu -->
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+                            with font-awesome or any other icon font library -->
+                            <!--Observateur-->
+                                {% with path=request.path %}
 
-                                    {% if request.user.userprofile.role.name_code in "coordonnator" %}
-                                        <li class="nav-item {% if 'message' in path %}  menu-is-opening menu-open {% endif %}">
-                                            <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Messages</a>
+                                    {% if request.user.userprofile.role.name_code in "coordonnator,responsable,observator" %}
+                                    
+                                        <li class="nav-item {% if 'alert' in path %}  menu-is-opening menu-open {% endif %}">
+                                            <a href="{% url 'alerts-registry' 1 %}" class="nav-link alert_denonciation {% if 'alert' in path %} active  {% endif %}">Alertes et dénonciation</a>
                                         </li>
 
-                                
-                                        <li class="nav-item {% if 'accounts' in path %}  menu-is-opening menu-open {% endif %}">
-                                            <a href="#" class="nav-link {% if 'accounts' in path %} active {% endif %}">
-                                                Gestion utilisateurs
+                                        <li class="nav-item {% if 'fiche' in path %}  menu-is-opening menu-open {% endif %} ">
+                                            <a href="#" class="nav-link   {% if 'fiche' in path %} active {% endif %}">
+                                                Fiches
                                                 <i class="right fas fa-angle-left"></i>
                                             </a>
-                                            <ul class="nav nav-treeview" {% if 'accounts' in path %} style="display: block;"  {% endif %}>
+                                            <ul class="nav nav-treeview" {% if 'fiche' in path %} style="display: block;"  {% endif %}>
                                                 <li class="nav-item">
-                                                    <a href="{% url 'users-list' 1 %}" class="nav-link {% if 'user' in path %} active {% endif %}">
-                                                        Utilisateurs
-                                                    </a>
+                                                    <a href="{% url 'fiche-info-registry' 1 %}" class="nav-link  {% if 'fiche-info' in path %} active {% endif %}">Fiches d'information</a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="{% url 'organisations-list' 1 %}" class="nav-link {% if 'organisation' in path %} active {% endif %}">
-                                                        Organisations
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="{% url 'roles-list' 1 %}" class="nav-link {% if 'role' in path %} active {% endif %}">
-                                                        Role
-                                                    </a>
+                                                    <a href="{% url 'fiche-pertinence-registry' 1 %}" class="nav-link  {% if 'fiche-pertinence' in path %} active {% endif %}">Fiches de pertinence</a>
                                                 </li>
                                             </ul>
                                         </li>
+                                    
+                                        <li class="nav-item {% if 'mission' in path %}  menu-is-opening menu-open {% endif %}">
+                                            <a href="{% url 'mission-registry' 1 %}" class="nav-link {% if 'mission' in path %} active {% endif %}">Mission</a>
+                                        </li>
+
+                                        {% if request.user.userprofile.organisation.organisation_type.name_code == "lobbying" or request.user.userprofile.role.name_code == "coordonnator" %}
+
+                                            <li class="nav-item {% if 'lobby' in path %}  menu-is-opening menu-open {% endif %}">
+                                                {% if request.user.userprofile.role.name_code == "coordonnator" %}
+                                                    <a href="{% url 'lobby-registry' 1 %}" class="nav-link {% if 'lobby' in path %} active {% endif %}">Communication & Lobbying</a>
+                                                {% else %}
+                                                    <a href="{% url 'lobby-registry' 1 %}" class="nav-link {% if 'lobby' in path %} active {% endif %}">Lobbying</a>
+                                                {% endif %}
+                                                
+                                            </li>
+                                        {% endif %}
+                
+                                        <li class="nav-item {% if 'stats' in path %}  menu-is-opening menu-open {% endif %}">
+                                            <a href="" class="nav-link {% if 'stats' in path %} active {% endif %}">
+                                                Statistiques
+                                                <i class="right fas fa-angle-left"></i>
+                                            </a>
+                                            
+                                            <ul class="nav nav-treeview" {% if 'stats' in path %} style="display: block;"  {% endif %}>
+                                                    <li class="nav-item">
+                                                        <a href="{% url 'stat-fiche' %}" class="nav-link {% if 'stat-fi' in path %} active {% endif %}">
+                                                            Fiches
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{% url 'stat-alert' %}" class="nav-link {% if 'stat-al' in path %} active {% endif %}">
+                                                            Alertes/Dénonciations
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                    <a href="{% url 'stat-mission' %}" class="nav-link {% if 'stat-mis' in path %} active {% endif %}">
+                                                        Missions</a>
+                                                    </li>
+                                                
+                                            </ul>
+                                        </li>
+
+                                        {% if request.user.userprofile.role.name_code in "coordonnator" %}
+                                            <li class="nav-item {% if 'message' in path %}  menu-is-opening menu-open {% endif %}">
+                                                <a href="" class="nav-link {% if 'communication' in path %} active {% endif %}">Messages</a>
+                                            </li>
+
+                                    
+                                            <li class="nav-item {% if 'accounts' in path %}  menu-is-opening menu-open {% endif %}">
+                                                <a href="#" class="nav-link {% if 'accounts' in path %} active {% endif %}">
+                                                    Gestion utilisateurs
+                                                    <i class="right fas fa-angle-left"></i>
+                                                </a>
+                                                <ul class="nav nav-treeview" {% if 'accounts' in path %} style="display: block;"  {% endif %}>
+                                                    <li class="nav-item">
+                                                        <a href="{% url 'users-list' 1 %}" class="nav-link {% if 'user' in path %} active {% endif %}">
+                                                            Utilisateurs
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{% url 'organisations-list' 1 %}" class="nav-link {% if 'organisation' in path %} active {% endif %}">
+                                                            Organisations
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="{% url 'roles-list' 1 %}" class="nav-link {% if 'role' in path %} active {% endif %}">
+                                                            Role
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    
                                     {% endif %}
+
+
+                                    <li class="nav-item">
+                                        <a href="" class="nav-link {% if 'documentation' in path %} active {% endif %}">
+                                            Documentation
+                                            <i class="right fas fa-angle-left"></i>
+                                        </a>
+                                        
+                                        <ul class="nav nav-treeview">
+                                        </ul>
+                                    </li>
                                 
-                                {% endif %}
+                                    
+                                {% endwith %}
+                            <!-- End Observateur -->
 
+                            <!-- 
 
+                            {% if request.user.userprofile.is_coordonator %}
                                 <li class="nav-item">
-                                    <a href="" class="nav-link {% if 'documentation' in path %} active {% endif %}">
-                                        Documentation
+                                    <a href="<?= base_url('/registre-alertes') ?>" class="nav-link <?php if(strstr(current_url(), 'registre-alertes')){ echo "active";}else{ false ;}?>">Alertes dénonciations</a>
+                                </li>
+                            
+                                <li class="nav-item">
+                                    <a href="<?= base_url('/fiche-information') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-information')){ echo "active";}else{ false ;}?> ">Fiches d'information</a>
+                                </li>
+                                    <li class="nav-item">
+                                        <a href="<?= base_url('/fiche-pertinence') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-pertinence')){ echo "active";}else{ false ;}?>">Fiches de pertinence</a>
+                                    </li>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('/mission') ?>" class="nav-link <?php if(strstr(current_url(), 'mission')){ echo "active";}else{ false ;}?>">Mission</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('/communication') ?>" class="nav-link <?php if(strstr(current_url(), 'communication')){ echo "active";}else{ false ;}?>">Communication & lobbying</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="" class="nav-link <?php if(strstr(current_url(), 'statistiques')){ echo "active";}else{ false ;}?>">
+                                        <?=  lang('Index.stats')?>
                                         <i class="right fas fa-angle-left"></i>
                                     </a>
                                     
                                     <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="<?= base_url('/statistiques/fiches') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/fiches')){ echo "active";}else{ false ;}?>">
+                                                Fiches
+                                                </a>
+                                            </li>
+                                            <li>
+                                            <a href="<?= base_url('/statistiques/alertes') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/alertes')){ echo "active";}else{ false ;}?>">
+                                                Alertes/Dénonciations
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                            <a href="<?= base_url('/statistiques/missions') ?>" class="nav-link <?php if(strstr(current_url(), 'statistiques/missions')){ echo "active";}else{ false ;}?>">Missions</a>
+                                            </li>
                                     </ul>
                                 </li>
+            
+                                <li class="nav-item">
+                                    <a href="<?= base_url('/messages') ?>" class="nav-link <?php if(strstr(current_url(), 'messages')){ echo "active";}else{ false ;}?>">Messages</a>
+                                </li>
+                
+                
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link <?php if(strstr(current_url(), 'utilisateurs')){ echo "active";}else{ false ;} ?>">
+                                        Utilisateurs
+                                        <i class="right fas fa-angle-left"></i>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="<?= base_url('/utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'utilisateur')){ echo "active";}else{ false ;} ?>">
+                                            
+                                            <p>Comptes existants</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="<?= base_url('/utilisateurs/nouveaux-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'nouveaux-utilisateurs')){ echo "active";}else{ false ;} ?>">
+                                            Nouveaux utilisateurs
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="<?= base_url('/utilisateurs/anciens-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'anciens-utilisateurs')){ echo "active";}else{ false ;} ?>">
+                                            Anciens utilisateurs
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                
+                                <li class="nav-item">
+                                <a href="<?= base_url('/coordination/organisation') ?>" class="nav-link <?php if(strstr(current_url(), 'organisation')){ echo "active";}else{ false ;}?>">
+                                    Organisation
+                                </a>
+                                </li>
                             
-                                
-                            {% endwith %}
-                        <!-- End Observateur -->
+                            {% endif %}
 
-                        <!-- 
-
-                        {% if request.user.userprofile.is_coordonator %}
-                            <li class="nav-item">
-                                <a href="<?= base_url('/registre-alertes') ?>" class="nav-link <?php if(strstr(current_url(), 'registre-alertes')){ echo "active";}else{ false ;}?>">Alertes dénonciations</a>
-                            </li>
                         
+                            <-- end coordination 
+
+                        <-- responsable  organisation 
+                        
+                        {% if request.user.userprofile.is_responsible %}
+                            <li class="nav-item">
+                                <a href="<?= base_url('/registre-alertes') ?>" class="nav-link <?php if(strstr(current_url(), 'registre-alertes')){ echo "active";}else{ false ;}?>">Alertes et dénonciations</a>
+                            </li>
+                            
                             <li class="nav-item">
                                 <a href="<?= base_url('/fiche-information') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-information')){ echo "active";}else{ false ;}?> ">Fiches d'information</a>
                             </li>
-                                <li class="nav-item">
-                                    <a href="<?= base_url('/fiche-pertinence') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-pertinence')){ echo "active";}else{ false ;}?>">Fiches de pertinence</a>
-                                </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('fiche-pertinence') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-pertinence')){ echo "active";}else{ false ;}?>">Fiches de pertinence</a>
+                            </li>
                             <li class="nav-item">
                                 <a href="<?= base_url('/mission') ?>" class="nav-link <?php if(strstr(current_url(), 'mission')){ echo "active";}else{ false ;}?>">Mission</a>
                             </li>
                             <li class="nav-item">
-                                <a href="<?= base_url('/communication') ?>" class="nav-link <?php if(strstr(current_url(), 'communication')){ echo "active";}else{ false ;}?>">Communication & lobbying</a>
+                                <a href="<?= base_url('/communication') ?>" class="nav-link <?php if(strstr(current_url(), 'communication')){ echo "active";}else{ false ;}?>">Lobbying</a>
                             </li>
+            
                             <li class="nav-item">
-                                <a href="" class="nav-link <?php if(strstr(current_url(), 'statistiques')){ echo "active";}else{ false ;}?>">
-                                    <?=  lang('Index.stats')?>
+                            <a href="" class="nav-link <?php if(strstr(current_url(), 'statistiques')){ echo "active";}else{ false ;}?>">
+                                    Statistiques
                                     <i class="right fas fa-angle-left"></i>
                                 </a>
                                 
@@ -246,192 +330,112 @@
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                        <a href="<?= base_url('/statistiques/missions') ?>" class="nav-link <?php if(strstr(current_url(), 'statistiques/missions')){ echo "active";}else{ false ;}?>">Missions</a>
+                                        <a href="<?= base_url('statistiques/missions') ?>" class="nav-link <?php if(strstr(current_url(), 'statistiques/missions')){ echo "active";}else{ false ;}?>">Missions</a>
+                                        </li>
+                                    
+                                </ul>
+                            </li>
+                        {% endif %}
+                            
+                        <-- end responsable 
+
+                        <-- admin 
+                        {% if request.user.userprofile.is_admin %}
+                            <li class="nav-item">
+                            <a href="#" class="nav-link <?php if(strstr(current_url(), 'utilisateurs')){ echo "active";}else{ false ;} ?>">
+                                Module Utilisateur
+                                <i class="right fas fa-angle-left"></i>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="<?= base_url('admin/utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'admin')){ echo "active";}else{ false ;} ?>">
+                                    
+                                    <p>Compte Existant</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('admin/utilisateurs/nouveaux-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'nouveaux-utilisateurs')){ echo "active";}else{ false ;} ?>">
+                                    Nouveaux Utilisateurs
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('admin/utilisateurs/anciens-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'anciens-utilisateurs')){ echo "active";}else{ false ;} ?>">
+                                    Anciens utilisateurs
+                                    </a>
+                                </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                            <a href="" class="nav-link <?php if(strstr(current_url(), 'statistiques')){ echo "active";}else{ false ;}?>">
+                                    Statistiques
+                                    <i class="right fas fa-angle-left"></i>
+                                </a>
+                                
+                                <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="<?= base_url('statistiques/fiches') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/fiches')){ echo "active";}else{ false ;}?>">
+                                            Fiches
+                                            </a>
+                                        </li>
+                                        <li>
+                                        <a href="<?= base_url('statistiques/alertes') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/alertes')){ echo "active";}else{ false ;}?>">
+                                            Alertes/Dénonciations
+                                            </a>
+                                        </li>
+                                        <li>
+                                        <a href="<?= base_url('statistiques/missions') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/missions')){ echo "active";}else{ false ;}?>">
+                                            Missions
+                                            </a>
                                         </li>
                                 </ul>
                             </li>
-        
                             <li class="nav-item">
-                                <a href="<?= base_url('/messages') ?>" class="nav-link <?php if(strstr(current_url(), 'messages')){ echo "active";}else{ false ;}?>">Messages</a>
+                            <a href="<?= base_url('admin/documentation') ?>" class="nav-link <?php if(strstr(current_url(), 'documentation')){ echo "active";}else{ false ;}?>">
+                                Module Documentation
+                            </a>
                             </li>
-            
-            
                             <li class="nav-item">
-                                <a href="#" class="nav-link <?php if(strstr(current_url(), 'utilisateurs')){ echo "active";}else{ false ;} ?>">
-                                    Utilisateurs
+                            <a href="<?= base_url('admin/categories') ?>" class="nav-link <?php if(strstr(current_url(), 'categories')){ echo "active";}else{ false ;}?>">
+                                Module Categories
+                            </a>
+                            </li>
+                            <li class="nav-item">
+                            <a href="<?= base_url('admin/organisation') ?>" class="nav-link <?php if(strstr(current_url(), 'organisation')){ echo "active";}else{ false ;}?>">
+                                Module Organisations
+                            </a>
+                        {% endif %}
+                        <-- end admin 
+
+                            <li class="nav-item">
+                                <a href="" class="nav-link {% if 'documentation' in path %} active {% endif %}">
+                                    Documentation
                                     <i class="right fas fa-angle-left"></i>
                                 </a>
+                                
                                 <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="<?= base_url('/utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'utilisateur')){ echo "active";}else{ false ;} ?>">
-                                        
-                                        <p>Comptes existants</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="<?= base_url('/utilisateurs/nouveaux-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'nouveaux-utilisateurs')){ echo "active";}else{ false ;} ?>">
-                                        Nouveaux utilisateurs
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="<?= base_url('/utilisateurs/anciens-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'anciens-utilisateurs')){ echo "active";}else{ false ;} ?>">
-                                        Anciens utilisateurs
-                                        </a>
-                                    </li>
+                                    <?php foreach($cats as $key=>$cat):?>
+                                        <li class="nav-item">
+                                        <?php $adr = strtolower(str_replace(' ', '-', $cat['nom_cat'])) ?>
+                                            <a href="<?= base_url('/documentation/'.$adr) ?>" class="nav-link">
+                                            <?= $cat['nom_cat'] ?>
+                                            </a>
+                                        </li>
+                                    <?php endforeach ?>
                                 </ul>
-                            </li>
-            
-                            <li class="nav-item">
-                            <a href="<?= base_url('/coordination/organisation') ?>" class="nav-link <?php if(strstr(current_url(), 'organisation')){ echo "active";}else{ false ;}?>">
-                                Organisation
-                            </a>
-                            </li>
-                        
-                        {% endif %}
-
-                    
-                        <-- end coordination 
-
-                    <-- responsable  organisation 
-                    
-                    {% if request.user.userprofile.is_responsible %}
-                        <li class="nav-item">
-                            <a href="<?= base_url('/registre-alertes') ?>" class="nav-link <?php if(strstr(current_url(), 'registre-alertes')){ echo "active";}else{ false ;}?>">Alertes et dénonciations</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a href="<?= base_url('/fiche-information') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-information')){ echo "active";}else{ false ;}?> ">Fiches d'information</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('fiche-pertinence') ?>" class="nav-link <?php if(strstr(current_url(), 'fiche-pertinence')){ echo "active";}else{ false ;}?>">Fiches de pertinence</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('/mission') ?>" class="nav-link <?php if(strstr(current_url(), 'mission')){ echo "active";}else{ false ;}?>">Mission</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('/communication') ?>" class="nav-link <?php if(strstr(current_url(), 'communication')){ echo "active";}else{ false ;}?>">Lobbying</a>
-                        </li>
-        
-                        <li class="nav-item">
-                        <a href="" class="nav-link <?php if(strstr(current_url(), 'statistiques')){ echo "active";}else{ false ;}?>">
-                                Statistiques
-                                <i class="right fas fa-angle-left"></i>
-                            </a>
-                            
-                            <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="<?= base_url('/statistiques/fiches') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/fiches')){ echo "active";}else{ false ;}?>">
-                                        Fiches
-                                        </a>
-                                    </li>
-                                    <li>
-                                    <a href="<?= base_url('/statistiques/alertes') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/alertes')){ echo "active";}else{ false ;}?>">
-                                        Alertes/Dénonciations
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                    <a href="<?= base_url('statistiques/missions') ?>" class="nav-link <?php if(strstr(current_url(), 'statistiques/missions')){ echo "active";}else{ false ;}?>">Missions</a>
-                                    </li>
-                                
-                            </ul>
-                        </li>
-                    {% endif %}
-                        
-                    <-- end responsable 
-
-                    <-- admin 
-                    {% if request.user.userprofile.is_admin %}
-                        <li class="nav-item">
-                        <a href="#" class="nav-link <?php if(strstr(current_url(), 'utilisateurs')){ echo "active";}else{ false ;} ?>">
-                            Module Utilisateur
-                            <i class="right fas fa-angle-left"></i>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="<?= base_url('admin/utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'admin')){ echo "active";}else{ false ;} ?>">
-                                
-                                <p>Compte Existant</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('admin/utilisateurs/nouveaux-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'nouveaux-utilisateurs')){ echo "active";}else{ false ;} ?>">
-                                Nouveaux Utilisateurs
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('admin/utilisateurs/anciens-utilisateurs') ?>" class="nav-link <?php if(strstr(current_url(), 'anciens-utilisateurs')){ echo "active";}else{ false ;} ?>">
-                                Anciens utilisateurs
-                                </a>
-                            </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                        <a href="" class="nav-link <?php if(strstr(current_url(), 'statistiques')){ echo "active";}else{ false ;}?>">
-                                Statistiques
-                                <i class="right fas fa-angle-left"></i>
-                            </a>
-                            
-                            <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="<?= base_url('statistiques/fiches') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/fiches')){ echo "active";}else{ false ;}?>">
-                                        Fiches
-                                        </a>
-                                    </li>
-                                    <li>
-                                    <a href="<?= base_url('statistiques/alertes') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/alertes')){ echo "active";}else{ false ;}?>">
-                                        Alertes/Dénonciations
-                                        </a>
-                                    </li>
-                                    <li>
-                                    <a href="<?= base_url('statistiques/missions') ?>" class="nav-link" <?php if(strstr(current_url(), 'statistiques/missions')){ echo "active";}else{ false ;}?>">
-                                        Missions
-                                        </a>
-                                    </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                        <a href="<?= base_url('admin/documentation') ?>" class="nav-link <?php if(strstr(current_url(), 'documentation')){ echo "active";}else{ false ;}?>">
-                            Module Documentation
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a href="<?= base_url('admin/categories') ?>" class="nav-link <?php if(strstr(current_url(), 'categories')){ echo "active";}else{ false ;}?>">
-                            Module Categories
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a href="<?= base_url('admin/organisation') ?>" class="nav-link <?php if(strstr(current_url(), 'organisation')){ echo "active";}else{ false ;}?>">
-                            Module Organisations
-                        </a>
-                    {% endif %}
-                    <-- end admin 
-
-                        <li class="nav-item">
-                            <a href="" class="nav-link {% if 'documentation' in path %} active {% endif %}">
-                                Documentation
-                                <i class="right fas fa-angle-left"></i>
-                            </a>
-                            
-                            <ul class="nav nav-treeview">
-                                <?php foreach($cats as $key=>$cat):?>
-                                    <li class="nav-item">
-                                    <?php $adr = strtolower(str_replace(' ', '-', $cat['nom_cat'])) ?>
-                                        <a href="<?= base_url('/documentation/'.$adr) ?>" class="nav-link">
-                                        <?= $cat['nom_cat'] ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach ?>
-                            </ul>
-                        </li-->
-                    </ul>
-                </nav> 
-                <!-- /.sidebar-menu -->
+                            </li-->
+                        </ul>
+                    </nav> 
+                    <!-- /.sidebar-menu -->
                 </div>
                 <!-- /.sidebar -->
             </aside>
             <div class="content-wrapper" style="min-height: 671.233px;">
                 {% block content %}
                 {% endblock %}
+
+                <div class="comment-modal">
+                    
+                </div>
                 
             </div>
         </div>
